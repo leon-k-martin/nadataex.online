@@ -9,7 +9,7 @@
 <body>
     <!-- WATER VIDEO BACKGROUND -->
     <div class="water-bg">
-        <video class="water-video" autoplay muted loop playsinline>
+        <video class="water-video" autoplay muted loop playsinline preload="auto">
             <source src="static/video/water-bg.mp4" type="video/mp4">
         </video>
         <div class="water-overlay"></div>
@@ -19,7 +19,7 @@
     <header id="main-header">
         <nav class="header-nav">
             <a href="#hero" class="nav-logo">
-                <img src="nada_logo_sub.png" alt="NADAtäx" class="header-logo">
+                <img src="static/img/nada_logo_sub.png" alt="NADAtäx" class="header-logo">
             </a>
             <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
                 <span class="wave-line"></span>
@@ -39,13 +39,11 @@
     <!-- HERO SECTION -->
     <section id="hero">
         <div class="hero-content">
-            <img src="nada_logo.png" alt="NADAtäx upcycling" class="hero-logo">
-            <p class="tagline">upcycling</p>
+            <img src="static/img/nada_logo.png" alt="NADAtäx upcycling" class="hero-logo">
         </div>
-        <!-- Wave divider -->
         <div class="wave-divider">
             <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+                <path d="M0,30 C150,55 350,5 500,30 C650,55 850,5 1000,30 C1100,45 1150,25 1200,30 L1200,60 L0,60 Z" fill="#0818a8" fill-opacity="0.35"/>
             </svg>
         </div>
     </section>
@@ -54,11 +52,11 @@
     <section id="designs">
         <h2>designs</h2>
         <div class="product-grid" id="product-grid">
-            <!-- Product cards loaded dynamically from static/img/products/ -->
+            <!-- Loaded dynamically from static/img/products/ -->
         </div>
         <div class="wave-divider">
             <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+                <path d="M0,25 C200,55 400,5 600,35 C800,55 1000,10 1200,25 L1200,60 L0,60 Z" fill="#0818a8" fill-opacity="0.35"/>
             </svg>
         </div>
     </section>
@@ -74,7 +72,7 @@
         </div>
         <div class="wave-divider">
             <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+                <path d="M0,35 C150,10 300,50 500,25 C700,0 900,50 1200,30 L1200,60 L0,60 Z" fill="#0818a8" fill-opacity="0.35"/>
             </svg>
         </div>
     </section>
@@ -102,7 +100,7 @@
         </div>
         <div class="wave-divider">
             <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+                <path d="M0,30 C200,55 400,10 600,30 C800,50 1000,10 1200,35 L1200,60 L0,60 Z" fill="#0818a8" fill-opacity="0.35"/>
             </svg>
         </div>
     </section>
@@ -111,11 +109,11 @@
     <section id="faq">
         <h2>faq</h2>
         <div class="faq-accordion" id="faq-accordion">
-            <!-- FAQ entries loaded from content/faq.md -->
+            <!-- Loaded from content/faq.md -->
         </div>
         <div class="wave-divider">
             <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
-                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+                <path d="M0,28 C200,50 350,5 550,30 C750,55 950,10 1200,28 L1200,60 L0,60 Z" fill="#0818a8" fill-opacity="0.35"/>
             </svg>
         </div>
     </section>
@@ -135,13 +133,19 @@
     <!-- REVIEW TICKER (fixed bottom) -->
     <div class="review-ticker" id="review-ticker">
         <div class="ticker-track" id="ticker-track">
-            <!-- Reviews loaded dynamically from content/reviews.json -->
+            <!-- Loaded from content/reviews.json -->
         </div>
     </div>
 
     <!-- RIPPLE CONTAINER -->
     <div id="ripple-container"></div>
 
-    <script src="script.js"></script>
+    <!-- JS modules -->
+    <script src="js/about.js"></script>
+    <script src="js/faq.js"></script>
+    <script src="js/photos.js"></script>
+    <script src="js/ticker.js"></script>
+    <script src="js/interactions.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

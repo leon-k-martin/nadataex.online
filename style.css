@@ -1,5 +1,7 @@
-/* ===== BASE STYLES ===== */
-* {
+/* ===== RESET & VARIABLES ===== */
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -8,6 +10,7 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 70px;
+    overflow-x: hidden;
 }
 
 :root {
@@ -18,16 +21,17 @@ html {
     --warm-grey: #8B8680;
     --red: #C13A3A;
     --white: #ffffff;
-
     --font-main: 'Courier New', Courier, monospace;
 }
 
 body {
     font-family: var(--font-main);
-    background-color: var(--water-blue);
+    background: transparent;
     color: var(--deep-blue);
     line-height: 1.6;
     overflow-x: hidden;
+    width: 100vw;
+    max-width: 100%;
     padding-top: 65px;
     text-transform: lowercase;
     cursor: crosshair;
@@ -38,33 +42,29 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
     overflow: hidden;
     background: var(--water-blue);
 }
 
 .water-video {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     object-fit: cover;
 }
 
-/* Subtle tint overlay to unify with color palette */
 .water-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(74, 144, 217, 0.25);
+    background: rgba(74, 144, 217, 0.55);
     pointer-events: none;
 }
 
@@ -77,6 +77,7 @@ body {
     z-index: 1000;
     background: rgba(74, 144, 217, 0.92);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-bottom: 3px dashed var(--deep-blue);
 }
 
@@ -97,7 +98,6 @@ body {
 .header-logo {
     height: 44px;
     width: auto;
-    filter: brightness(0) invert(0);
 }
 
 .nav-links {
@@ -124,7 +124,7 @@ body {
     color: var(--cream);
 }
 
-/* Mobile menu toggle — wave lines instead of straight hamburger */
+/* Mobile menu toggle — wave-shaped lines */
 .mobile-menu-toggle {
     display: none;
     flex-direction: column;
@@ -140,31 +140,24 @@ body {
     width: 28px;
     height: 3px;
     background: var(--deep-blue);
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
-
-.wave-line:nth-child(1) {
-    transform: translateY(0) rotate(0);
     border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    transition: all 0.3s ease;
 }
 
 .wave-line:nth-child(2) {
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
 }
 
-.wave-line:nth-child(3) {
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-}
-
 /* ===== SECTIONS ===== */
 section {
-    padding: 40px 20px 60px 20px;
+    padding: 40px 20px 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    min-height: 50vh;
+    z-index: 1;
+    min-height: 40vh;
+    overflow: hidden;
 }
 
 h2 {
@@ -189,19 +182,18 @@ h2::after {
     transform: rotate(0.5deg);
 }
 
-/* Wave divider between sections */
+/* ===== WAVE DIVIDERS ===== */
 .wave-divider {
     width: 100%;
     margin-top: auto;
     line-height: 0;
-    position: relative;
-    bottom: -1px;
+    flex-shrink: 0;
 }
 
 .wave-divider svg {
-    width: 100%;
-    height: 40px;
     display: block;
+    width: 100%;
+    height: 50px;
 }
 
 /* ===== HERO SECTION ===== */
@@ -239,14 +231,8 @@ h2::after {
 }
 
 @keyframes float-in {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes bob {
@@ -255,10 +241,6 @@ h2::after {
 }
 
 /* ===== DESIGNS / PRODUCTS ===== */
-#designs {
-    background: transparent;
-}
-
 .product-grid {
     display: flex;
     flex-wrap: wrap;
@@ -266,7 +248,7 @@ h2::after {
     gap: 30px;
     max-width: 1100px;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 30px;
 }
 
 .product-card {
@@ -305,13 +287,6 @@ h2::after {
     box-shadow: 0 12px 30px rgba(8, 24, 168, 0.15);
 }
 
-.product-card .product-label {
-    margin-top: 10px;
-    font-size: 0.85rem;
-    color: var(--warm-grey);
-    text-align: center;
-}
-
 .product-placeholder {
     width: 100%;
     height: 200px;
@@ -325,10 +300,6 @@ h2::after {
 }
 
 /* ===== ABOUT SECTION ===== */
-#about {
-    background: transparent;
-}
-
 .about-content {
     max-width: 700px;
     text-align: left;
@@ -350,7 +321,6 @@ h2::after {
     margin-bottom: 0;
 }
 
-/* Language toggle (like nohub) */
 .lang-toggle {
     font-size: 0.9rem;
     font-weight: normal;
@@ -370,17 +340,9 @@ h2::after {
     transform: rotate(-1deg);
 }
 
-.about-content .about-text-de {
-    display: none;
-}
-
-.about-content.show-de .about-text-en {
-    display: none;
-}
-
-.about-content.show-de .about-text-de {
-    display: block;
-}
+.about-content .about-text-de { display: none; }
+.about-content.show-de .about-text-en { display: none; }
+.about-content.show-de .about-text-de { display: block; }
 
 /* Process photo collage */
 .process-collage {
@@ -389,6 +351,7 @@ h2::after {
     justify-content: center;
     gap: 15px;
     max-width: 900px;
+    margin-bottom: 20px;
 }
 
 .process-photo {
@@ -408,16 +371,13 @@ h2::after {
 }
 
 /* ===== STOCKISTS ===== */
-#stockists {
-    background: transparent;
-}
-
 .stockist-cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 25px;
     max-width: 900px;
+    margin-bottom: 30px;
 }
 
 .stockist-card {
@@ -471,13 +431,10 @@ h2::after {
 }
 
 /* ===== FAQ SECTION ===== */
-#faq {
-    background: transparent;
-}
-
 .faq-accordion {
     max-width: 700px;
     width: 100%;
+    margin-bottom: 30px;
 }
 
 .faq-item {
@@ -530,8 +487,7 @@ h2::after {
 
 /* ===== CONTACT SECTION ===== */
 #contact {
-    background: transparent;
-    padding-bottom: 100px; /* Space for ticker */
+    padding-bottom: 100px;
 }
 
 .contact-content {
@@ -562,10 +518,12 @@ h2::after {
 footer {
     text-align: center;
     padding: 20px;
-    padding-bottom: 70px; /* Space for ticker */
+    padding-bottom: 70px;
     color: var(--deep-blue);
     opacity: 0.6;
     font-size: 0.85rem;
+    position: relative;
+    z-index: 1;
 }
 
 /* ===== REVIEW TICKER (fixed bottom) ===== */
@@ -584,7 +542,6 @@ footer {
     border-top: 2px dashed var(--water-blue);
 }
 
-/* Wavy top edge on ticker */
 .review-ticker::before {
     content: '';
     position: absolute;
@@ -609,15 +566,8 @@ footer {
     flex-shrink: 0;
 }
 
-.ticker-item::before {
-    content: '~ ';
-    color: var(--water-light);
-}
-
-.ticker-item::after {
-    content: ' ~';
-    color: var(--water-light);
-}
+.ticker-item::before { content: '~ '; color: var(--water-light); }
+.ticker-item::after { content: ' ~'; color: var(--water-light); }
 
 @keyframes ticker-scroll {
     0% { transform: translateX(0); }
@@ -633,6 +583,7 @@ footer {
     height: 100%;
     pointer-events: none;
     z-index: 50;
+    overflow: hidden;
 }
 
 .ripple {
@@ -644,25 +595,13 @@ footer {
 }
 
 @keyframes ripple-expand {
-    0% {
-        width: 0;
-        height: 0;
-        opacity: 0.6;
-    }
-    100% {
-        width: 120px;
-        height: 120px;
-        opacity: 0;
-        margin-top: -60px;
-        margin-left: -60px;
-    }
+    0% { width: 0; height: 0; opacity: 0.6; }
+    100% { width: 120px; height: 120px; opacity: 0; margin-top: -60px; margin-left: -60px; }
 }
 
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .mobile-menu-toggle {
-        display: flex;
-    }
+    .mobile-menu-toggle { display: flex; }
 
     .nav-links {
         display: none;
@@ -678,46 +617,17 @@ footer {
         border-bottom: 3px dashed var(--deep-blue);
     }
 
-    .nav-links.open {
-        display: flex;
-    }
+    .nav-links.open { display: flex; }
+    .nav-links a { font-size: 1.1rem; padding: 8px 0; }
 
-    .nav-links a {
-        font-size: 1.1rem;
-        padding: 8px 0;
-    }
-
-    .product-card {
-        width: 90%;
-        max-width: 300px;
-    }
-
-    .stockist-cards {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .stockist-card {
-        width: 80%;
-        max-width: 280px;
-    }
-
-    .process-photo {
-        width: 140px;
-        height: 140px;
-    }
-
-    h2 {
-        font-size: 1.6rem;
-    }
+    .product-card { width: 90%; max-width: 300px; }
+    .stockist-cards { flex-direction: column; align-items: center; }
+    .stockist-card { width: 80%; max-width: 280px; }
+    .process-photo { width: 140px; height: 140px; }
+    h2 { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {
-    .hero-logo {
-        width: clamp(200px, 80vw, 350px);
-    }
-
-    .product-card {
-        width: 95%;
-    }
+    .hero-logo { width: clamp(200px, 80vw, 350px); }
+    .product-card { width: 95%; }
 }
