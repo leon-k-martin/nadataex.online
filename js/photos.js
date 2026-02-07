@@ -1,12 +1,10 @@
 // ===== PRODUCT PHOTOS — discovers from static/img/products/ =====
 
-// Mosaic size pattern — some cards span 2 rows for variety
-// dense packing ensures no holes
-const MOSAIC_PATTERN = [
-    '', '', 'mosaic-tall', '',
-    '', '', '', '',
-    'mosaic-tall', '', '', '',
-];
+// Mosaic: number of rows (adjusts by screen width)
+function getMosaicRows() {
+    if (window.innerWidth >= 769) return 3;
+    return 2;
+}
 
 let _productPhotos = []; // cached after first load
 
@@ -66,14 +64,30 @@ function renderProducts() {
         return;
     }
 
-    grid.innerHTML = _productPhotos.map((photo, i) => {
-        const sizeClass = isMosaic ? MOSAIC_PATTERN[i % MOSAIC_PATTERN.length] : '';
-        return `
-            <div class="product-card ${sizeClass}" data-index="${i}">
+    if (isMosaic) {
+        // Split photos into rows distributed evenly
+        const numRows = getMosaicRows();
+        const rows = Array.from({ length: numRows }, () => []);
+        _productPhotos.forEach((photo, i) => {
+            rows[i % numRows].push({ photo, index: i });
+        });
+
+        grid.innerHTML = rows.map(row =>
+            `<div class="mosaic-row">` +
+            row.map(({ photo, index }) =>
+                `<div class="product-card" data-index="${index}">
+                    <img src="${photo}" alt="NADAtäx design" loading="lazy">
+                </div>`
+            ).join('') +
+            `</div>`
+        ).join('');
+    } else {
+        grid.innerHTML = _productPhotos.map((photo, i) => `
+            <div class="product-card" data-index="${i}">
                 <img src="${photo}" alt="NADAtäx design" loading="lazy">
             </div>
-        `;
-    }).join('');
+        `).join('');
+    }
 
     // Attach lightbox click handlers
     grid.querySelectorAll('.product-card').forEach(card => {

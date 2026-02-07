@@ -6,7 +6,7 @@ async function loadAbout() {
     if (!container) return;
 
     try {
-        const response = await fetch('content/about.md');
+        const response = await fetch('content/about.md?v=' + Date.now());
         if (!response.ok) throw new Error('Failed to load about.md');
 
         const markdown = await response.text();
