@@ -146,14 +146,17 @@ body:active {
 .wave-line {
     display: block;
     width: 28px;
-    height: 3px;
-    background: var(--deep-blue);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    height: 8px;
+    transition: all 0.3s ease;
+    overflow: visible;
+}
+
+.wave-line path {
     transition: all 0.3s ease;
 }
 
-.wave-line:nth-child(2) {
-    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+.mobile-menu-toggle:hover .wave-line path {
+    stroke: var(--cream);
 }
 
 /* ===== SECTIONS ===== */
@@ -461,9 +464,10 @@ h2::after {
     text-align: left;
     line-height: 1.8;
     font-size: 1.1rem;
-    background: var(--cream);
-    padding: clamp(20px, 3vw, 35px);
+    background: url('static/img/textures/plane_weiss.jpg') center/cover;
+    padding: clamp(25px, 3.5vw, 40px);
     border: 3px dashed var(--deep-blue);
+    border-radius: 4% 3% 5% 2% / 3% 4% 2% 5%;
     transform: rotate(-0.5deg);
     margin-bottom: 15px;
     column-count: 2;
@@ -668,9 +672,10 @@ h2::after {
 }
 
 .contact-form {
-    background: url('static/img/plane_background.jpg') center/cover;
+    background: url('static/img/textures/plane_background.jpg') center/cover;
     padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
     border: clamp(3px, 0.3vw, 5px) dashed var(--red);
+    border-radius: 3% 5% 4% 2% / 5% 2% 4% 3%;
     display: flex;
     flex-direction: column;
     gap: clamp(1rem, 2vw, 1.5rem);

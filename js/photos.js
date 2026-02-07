@@ -82,11 +82,13 @@ function renderProducts() {
             `</div>`
         ).join('');
     } else {
-        grid.innerHTML = _productPhotos.map((photo, i) => `
-            <div class="product-card" data-index="${i}">
+        grid.innerHTML = _productPhotos.map((photo, i) => {
+            const tilt = ((Math.random() - 0.5) * 3).toFixed(1);
+            return `
+            <div class="product-card float float-sm" data-index="${i}" style="--tilt: ${tilt}deg;">
                 <img src="${photo}" alt="NADAtäx design" loading="lazy">
             </div>
-        `).join('');
+        `}).join('');
     }
 
     // Attach lightbox click handlers
@@ -96,6 +98,9 @@ function renderProducts() {
             openLightbox(idx);
         });
     });
+
+    // Re-init float delays for newly rendered cards
+    if (typeof initFloats === 'function') initFloats();
 }
 
 // ===== LIGHTBOX =====
