@@ -30,6 +30,10 @@ async function loadAbout() {
 
         container.innerHTML = html;
 
+        // Auto-fit font size so text fills the box without overflow
+        fitAboutText(container);
+        window.addEventListener('resize', () => fitAboutText(container));
+
         if (toggle) {
             toggle.addEventListener('click', () => {
                 const showingDe = container.classList.toggle('show-de');
@@ -39,4 +43,27 @@ async function loadAbout() {
     } catch (err) {
         console.error('Error loading about:', err);
     }
+}
+
+// Dynamically scale font-size so about text fits its container without overflow
+function fitAboutText(el) {
+    let lo = 0.5;   // rem min
+    let hi = 1.6;   // rem max
+
+    function isOverflowing(element) {
+        return element.scrollHeight > element.clientHeight + 1 ||
+               element.scrollWidth > element.clientWidth + 1;
+    }
+
+    // Binary search for the largest font-size that doesn't overflow
+    for (let i = 0; i < 20; i++) {
+        const mid = (lo + hi) / 2;
+        el.style.fontSize = mid + 'rem';
+        if (isOverflowing(el)) {
+            hi = mid;
+        } else {
+            lo = mid;
+        }
+    }
+    el.style.fontSize = lo + 'rem';
 }

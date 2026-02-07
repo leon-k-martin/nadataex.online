@@ -456,9 +456,11 @@ h2::after {
 
 .about-content {
     max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box;
     text-align: left;
     line-height: 1.8;
-    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+    font-size: 1.1rem;
     background: var(--cream);
     padding: clamp(20px, 3vw, 35px);
     border: 3px dashed var(--deep-blue);
@@ -466,9 +468,9 @@ h2::after {
     margin-bottom: 15px;
     column-count: 2;
     column-gap: 2.5rem;
-    column-rule: 2px dashed rgba(8, 24, 168, 0.2);
+    column-rule: 1px solid rgba(8, 24, 168, 0.12);
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 0;
 }
 
