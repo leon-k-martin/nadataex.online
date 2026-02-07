@@ -17,4 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRipples();
     initMobileMenu();
     initHeaderBehavior();
+
+    // Randomize float delays after all dynamic content is loaded
+    setTimeout(initFloats, 100);
 });

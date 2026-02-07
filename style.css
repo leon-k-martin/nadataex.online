@@ -34,7 +34,11 @@ body {
     max-width: 100%;
     padding-top: 65px;
     text-transform: lowercase;
-    cursor: crosshair;
+    cursor: url('static/cursor/cursor_open.png') 16 16, crosshair;
+}
+
+body:active {
+    cursor: url('static/cursor/cursor_closed.png') 16 16, crosshair;
 }
 
 /* ===== WATER VIDEO BACKGROUND ===== */
@@ -219,7 +223,6 @@ h2::after {
     height: auto;
     transform: rotate(-1deg);
     margin-bottom: 20px;
-    animation: bob 4s ease-in-out infinite;
 }
 
 .tagline {
@@ -235,9 +238,30 @@ h2::after {
     100% { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes bob {
-    0%, 100% { transform: rotate(-1deg) translateY(0); }
-    50% { transform: rotate(-1deg) translateY(-8px); }
+/* ===== FLOAT UTILITY =====
+   Add class="float" to any element to make it bob.
+   Control via CSS custom properties:
+     --float-y:     vertical travel in px  (default 8px)
+     --float-speed: cycle duration         (default 4s)
+     --float-delay: animation delay        (default 0s)
+   Modifiers:
+     .float-sm   →  4px
+     .float-lg   → 14px
+     .float-slow → 7s
+     .float-fast → 2.5s
+*/
+.float {
+    animation: float-bob var(--float-speed, 4s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+}
+.float-sm  { --float-y: 4px; }
+.float-lg  { --float-y: 14px; }
+.float-slow { --float-speed: 7s; }
+.float-fast { --float-speed: 2.5s; }
+
+@keyframes float-bob {
+    0%, 100% { transform: rotate(var(--tilt, 0deg)) translateY(0); }
+    50%      { transform: rotate(var(--tilt, 0deg)) translateY(calc(-1 * var(--float-y, 8px))); }
 }
 
 /* ===== DESIGNS / PRODUCTS ===== */
@@ -259,8 +283,6 @@ h2::after {
     width: 260px;
     cursor: pointer;
     transition: all 0.3s ease;
-    animation: bob var(--bob-speed, 4s) ease-in-out infinite;
-    animation-delay: var(--bob-delay, 0s);
     position: relative;
 }
 
@@ -309,7 +331,6 @@ h2::after {
     border: 3px dashed var(--deep-blue);
     transform: rotate(-0.5deg);
     margin-bottom: 30px;
-    animation: bob 6s ease-in-out infinite;
 }
 
 .about-content p {
@@ -361,8 +382,6 @@ h2::after {
     border: 3px solid var(--cream);
     transform: rotate(var(--rotation, 0deg));
     transition: transform 0.3s ease;
-    animation: bob var(--bob-speed, 5s) ease-in-out infinite;
-    animation-delay: var(--bob-delay, 0s);
 }
 
 .process-photo:hover {
@@ -387,8 +406,6 @@ h2::after {
     text-align: center;
     transform: rotate(var(--tilt, 0deg));
     transition: all 0.3s ease;
-    animation: bob 4.5s ease-in-out infinite;
-    animation-delay: var(--bob-delay, 0s);
     min-width: 180px;
     position: relative;
 }
@@ -447,7 +464,7 @@ h2::after {
 
 .faq-question {
     padding: 15px 20px;
-    cursor: pointer;
+    cursor: url('static/cursor/cursor_open.png') 16 16, pointer;
     font-weight: bold;
     color: var(--deep-blue);
     display: flex;
@@ -462,13 +479,15 @@ h2::after {
 }
 
 .faq-question::after {
-    content: '✂';
-    font-size: 1.2rem;
+    content: '✂️';
+    font-size: 1.4rem;
     transition: transform 0.3s ease;
+    display: inline-block;
 }
 
 .faq-item.open .faq-question::after {
-    transform: rotate(90deg);
+    content: '✀';
+    transform: rotate(0deg);
 }
 
 .faq-answer {
@@ -505,7 +524,6 @@ h2::after {
     border: 3px dashed var(--cream);
     transition: all 0.3s ease;
     transform: rotate(-1deg);
-    animation: bob 5s ease-in-out infinite;
 }
 
 .contact-link:hover {

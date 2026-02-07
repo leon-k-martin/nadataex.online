@@ -31,13 +31,13 @@ async function loadProducts() {
 
     if (photos.length === 0) {
         grid.innerHTML = `
-            <div class="product-card" style="--tilt: -2deg; --bob-delay: 0s; --bob-speed: 4.2s;">
+            <div class="product-card float" style="--tilt: -2deg;">
                 <div class="product-placeholder">add photos to<br>static/img/products/</div>
             </div>
-            <div class="product-card" style="--tilt: 1.5deg; --bob-delay: 0.5s; --bob-speed: 4.8s;">
+            <div class="product-card float" style="--tilt: 1.5deg;">
                 <div class="product-placeholder">add photos to<br>static/img/products/</div>
             </div>
-            <div class="product-card" style="--tilt: -1deg; --bob-delay: 1s; --bob-speed: 3.8s;">
+            <div class="product-card float" style="--tilt: -1deg;">
                 <div class="product-placeholder">add photos to<br>static/img/products/</div>
             </div>
         `;
@@ -46,10 +46,8 @@ async function loadProducts() {
 
     grid.innerHTML = photos.map((photo, i) => {
         const tilt = ((Math.random() - 0.5) * 6).toFixed(1);
-        const delay = (i * 0.3).toFixed(1);
-        const speed = (3.5 + Math.random() * 2).toFixed(1);
         return `
-            <div class="product-card" style="--tilt: ${tilt}deg; --bob-delay: ${delay}s; --bob-speed: ${speed}s;">
+            <div class="product-card float" style="--tilt: ${tilt}deg;">
                 <img src="${photo}" alt="NADAtäx design" loading="lazy">
             </div>
         `;
@@ -88,9 +86,7 @@ async function loadProcessPhotos() {
 
     collage.innerHTML = photos.map((photo, i) => {
         const rotation = ((Math.random() - 0.5) * 14).toFixed(1);
-        const delay = (i * 0.4).toFixed(1);
-        const speed = (4 + Math.random() * 3).toFixed(1);
-        return `<img src="${photo}" alt="making-of" class="process-photo" loading="lazy"
-            style="--rotation: ${rotation}deg; --bob-delay: ${delay}s; --bob-speed: ${speed}s;">`;
+        return `<img src="${photo}" alt="making-of" class="process-photo float" loading="lazy"
+            style="--rotation: ${rotation}deg;">`;
     }).join('');
 }
