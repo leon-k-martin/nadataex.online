@@ -16,9 +16,6 @@ venv/
 *.swp
 *.swo
 
-# Netlify
-.netlify/
-
 # Local development
 *.log
 npm-debug.log*

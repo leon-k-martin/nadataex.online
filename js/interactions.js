@@ -52,37 +52,57 @@ function initHeaderBehavior() {
     // Header stays fixed via CSS, no scroll-hide behavior
 }
 
-// Contact form handler — ready for backend integration
+// Contact form handler — Formspree integration
 function initContactForm() {
     const form = document.getElementById('contact-form');
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const formData = new FormData(form);
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            message: formData.get('message')
-        };
-        
-        // Log to console (replace with actual email service)
-        console.log('Form submission:', data);
-        
-        // Show success feedback
         const button = form.querySelector('button');
         const originalText = button.textContent;
-        button.textContent = 'sent! ✓';
-        button.style.background = 'var(--water-blue)';
         
-        // Reset form
-        form.reset();
+        // Show loading state
+        button.textContent = 'sending...';
+        button.disabled = true;
         
-        // Reset button after 2 seconds
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.style.background = '';
-        }, 2000);
+        try {
+            // Submit to Formspree
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                // Success feedback
+                button.textContent = 'sent! ✓';
+                button.style.background = 'var(--water-blue)';
+                form.reset();
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                    button.disabled = false;
+                }, 3000);
+            } else {
+                throw new Error('Submission failed');
+            }
+        } catch (error) {
+            // Error feedback
+            button.textContent = 'error — try again';
+            button.style.background = 'var(--red)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+                button.disabled = false;
+            }, 3000);
+        }
     });
 }

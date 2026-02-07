@@ -18,26 +18,22 @@ Playful upcycling label website with early 2000s web aesthetics and water/floati
 
 ## 📧 Contact Form
 
-**Current state:** Form currently logs to browser console only.
+Form is integrated with **Formspree** (free tier: 50 submissions/month).
 
-**To make it functional, add one of these services:**
+### Activate the Form (2-minute setup):
 
-### Option 1: Formspree (Easiest)
-1. Sign up at [formspree.io](https://formspree.io) (free: 50 submissions/month)
-2. Get your form endpoint
-3. Update form in `index.html`:
+1. **Sign up** at [formspree.io](https://formspree.io) (free account, no credit card)
+2. Click **"+ New Form"**
+3. Name it (e.g., "NADAtäx Contact")
+4. Copy your **Form ID** (looks like `abc123xyz`)
+5. **Edit [`index.html`](index.html#L136)** and replace `YOUR_FORM_ID`:
    ```html
-   <form action="https://formspree.io/f/YOUR_ID" method="POST">
+   <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
    ```
+   Replace `YOUR_FORM_ID` with your actual ID
+6. Done! Form submissions will go to your email
 
-### Option 2: EmailJS (Client-side)
-1. Sign up at [emailjs.com](https://emailjs.com)
-2. Add their JavaScript library
-3. Update `js/interactions.js` to use EmailJS API
-
-### Option 3: Custom Backend
-- Create a serverless function (Vercel, Cloudflare Workers)
-- Point form to your API endpoint
+**Current state:** Form is ready but needs your Formspree ID to work.
 
 ## 🎨 Adding Content
 
@@ -74,7 +70,6 @@ Then open: `http://localhost:8081`
 ```
 ├── index.html              # Main HTML
 ├── style.css               # All styles
-├── netlify.toml            # Netlify config
 ├── content/                # Markdown content
 │   ├── about.md
 │   ├── faq.md
@@ -100,10 +95,9 @@ Then open: `http://localhost:8081`
 - 💧 Animated water video background
 - 🎈 Floating elements with random delays
 - 📱 Fully responsive (mobile-first)
-- 📧 Working contact form via Netlify
-Contact form (ready for backend integration)
+- 📧 Working contact form via Formspree (needs activation)
 
 ## 🔧 Tech Stack
 - **Vanilla HTML/CSS/JS** (no build step)
 - **GitHub Pages** hosting
-- **Formspree/EmailJS** for contact form (optional integration)
+- **Formspree** for contact form (free tier)
