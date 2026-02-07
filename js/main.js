@@ -37,18 +37,25 @@ function initScrollHint() {
     if (!scrollHint || !productGrid) return;
 
     let hasScrolled = false;
+    let armed = false; // only hide after an intentional user interaction
 
-    productGrid.addEventListener('scroll', () => {
-        if (!hasScrolled && productGrid.scrollLeft > 10) {
+    // Always show hint on load; hide only after intent + scroll
+    scrollHint.classList.remove('hidden');
+
+    const hideHintIfNeeded = () => {
+        if (hasScrolled || !armed) return;
+        if (productGrid.scrollLeft > 30) {
             hasScrolled = true;
             scrollHint.classList.add('hidden');
-            // Store in sessionStorage so it stays hidden
-            sessionStorage.setItem('designsScrolled', 'true');
         }
+    };
+
+    // Arm hiding only after user intent
+    ['pointerdown', 'wheel', 'touchstart'].forEach(evt => {
+        productGrid.addEventListener(evt, () => {
+            armed = true;
+        }, { passive: true });
     });
 
-    // Check if user has already scrolled in this session
-    if (sessionStorage.getItem('designsScrolled') === 'true') {
-        scrollHint.classList.add('hidden');
-    }
+    productGrid.addEventListener('scroll', hideHintIfNeeded, { passive: true });
 }
