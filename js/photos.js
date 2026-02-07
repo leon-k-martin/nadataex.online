@@ -69,11 +69,62 @@ function renderProducts() {
     grid.innerHTML = _productPhotos.map((photo, i) => {
         const sizeClass = isMosaic ? MOSAIC_PATTERN[i % MOSAIC_PATTERN.length] : '';
         return `
-            <div class="product-card ${sizeClass}">
+            <div class="product-card ${sizeClass}" data-index="${i}">
                 <img src="${photo}" alt="NADAtäx design" loading="lazy">
             </div>
         `;
     }).join('');
+
+    // Attach lightbox click handlers
+    grid.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const idx = parseInt(card.dataset.index, 10);
+            openLightbox(idx);
+        });
+    });
+}
+
+// ===== LIGHTBOX =====
+let _lightboxIndex = 0;
+
+function openLightbox(index) {
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    if (!lb || !img || _productPhotos.length === 0) return;
+    _lightboxIndex = index;
+    img.src = _productPhotos[_lightboxIndex];
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function lightboxNav(dir) {
+    if (_productPhotos.length === 0) return;
+    _lightboxIndex = (_lightboxIndex + dir + _productPhotos.length) % _productPhotos.length;
+    document.getElementById('lightbox-img').src = _productPhotos[_lightboxIndex];
+}
+
+function initLightbox() {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    document.getElementById('lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); lightboxNav(-1); });
+    document.getElementById('lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); lightboxNav(1); });
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+
+    document.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lightboxNav(-1);
+        if (e.key === 'ArrowRight') lightboxNav(1);
+    });
 }
 
 // SVG icons for view toggle

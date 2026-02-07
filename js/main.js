@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeaderBehavior();
     initContactForm();
     initViewToggle();
+    initLightbox();
 
     // Randomize float delays after all dynamic content is loaded
     setTimeout(initFloats, 100);
