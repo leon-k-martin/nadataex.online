@@ -7,9 +7,19 @@ async function loadAbout() {
 
     try {
         const response = await fetch('content/about.md?v=' + Date.now());
-        if (!response.ok) throw new Error('Failed to load about.md');
+        if (!response.ok) {
+            console.error('About fetch failed:', response.status, response.statusText);
+            container.innerHTML = '<p style="color: var(--deep-blue);">Error loading content. Please refresh.</p>';
+            throw new Error('Failed to load about.md');
+        }
 
         const markdown = await response.text();
+        if (!markdown || markdown.trim().length === 0) {
+            console.error('About.md is empty');
+            container.innerHTML = '<p style="color: var(--deep-blue);">Content unavailable.</p>';
+            return;
+        }
+        
         const sections = markdown.split(/\n---\n/);
 
         const toHtml = (text) => {
