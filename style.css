@@ -847,9 +847,9 @@ h2 {
 
 .faq-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
-    max-width: 1100px;
+    max-width: 960px;
     width: 100%;
     margin: auto 0;
     align-self: center;
@@ -1332,7 +1332,7 @@ body.theme-blue .ripple {
 
 @media (max-width: 1024px) {
     .faq-cards {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     }
 }
 
@@ -1436,7 +1436,7 @@ body.theme-blue .ripple {
     }
 
     .faq-cards {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         gap: 14px;
     }
 
