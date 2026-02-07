@@ -1291,6 +1291,7 @@ footer {
 .ripple {
     position: absolute;
     border: 2px solid rgba(8, 24, 168, 0.55);
+    border-width: 0;
     border-radius: 50%;
     animation: ripple-expand 2s ease-out forwards;
     pointer-events: none;
@@ -1302,19 +1303,30 @@ body.theme-blue .ripple {
 
 @keyframes ripple-expand {
     0% {
-        width: 20px;
-        height: 20px;
-        opacity: 0.8;
-        margin-top: -10px;
-        margin-left: -10px;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        margin-top: 0;
+        margin-left: 0;
+        border-width: 0;
+    }
+
+    10% {
+        width: 40px;
+        height: 40px;
+        opacity: 0.45;
+        margin-top: -20px;
+        margin-left: -20px;
+        border-width: 2px;
     }
 
     100% {
-        width: 150px;
-        height: 150px;
+        width: 170px;
+        height: 170px;
         opacity: 0;
-        margin-top: -75px;
-        margin-left: -75px;
+        margin-top: -85px;
+        margin-left: -85px;
+        border-width: 2px;
     }
 }
 
