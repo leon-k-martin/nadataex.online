@@ -272,7 +272,8 @@ h2 {
 
 /* ===== WAVE DIVIDERS ===== */
 .wave-divider {
-    width: 100%;
+    width: 100vw;
+    margin-left: -20px;
     margin-top: auto;
     line-height: 0;
     flex-shrink: 0;
@@ -283,6 +284,7 @@ h2 {
 #designs .wave-divider {
     position: relative;
     z-index: 10;
+    margin-left: 0;
 }
 
 .wave-divider svg {
