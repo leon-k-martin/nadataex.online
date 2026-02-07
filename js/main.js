@@ -20,7 +20,32 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initViewToggle();
     initLightbox();
+    initScrollHint();
 
     // Randomize float delays after all dynamic content is loaded
     setTimeout(initFloats, 100);
 });
+
+// ===== SCROLL HINT =====
+function initScrollHint() {
+    const scrollHint = document.getElementById('scroll-hint');
+    const productGrid = document.getElementById('product-grid');
+    
+    if (!scrollHint || !productGrid) return;
+    
+    let hasScrolled = false;
+    
+    productGrid.addEventListener('scroll', () => {
+        if (!hasScrolled && productGrid.scrollLeft > 10) {
+            hasScrolled = true;
+            scrollHint.classList.add('hidden');
+            // Store in sessionStorage so it stays hidden
+            sessionStorage.setItem('designsScrolled', 'true');
+        }
+    });
+    
+    // Check if user has already scrolled in this session
+    if (sessionStorage.getItem('designsScrolled') === 'true') {
+        scrollHint.classList.add('hidden');
+    }
+}

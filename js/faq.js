@@ -1,7 +1,7 @@
 // ===== FAQ SECTION — loads content/faq.md =====
 
 async function loadFAQ() {
-    const container = document.getElementById('faq-accordion');
+    const container = document.getElementById('faq-cards');
     if (!container) return;
 
     try {
@@ -10,46 +10,48 @@ async function loadFAQ() {
 
         const markdown = await response.text();
 
-        // Parse Q&A pairs: **Q: ...** followed by A: ...
-        const pairs = [];
+        // Parse sections: ## title followed by paragraphs
+        const sections = [];
         const lines = markdown.split('\n');
-        let currentQ = null;
+        let currentSection = null;
 
         for (const line of lines) {
-            const qMatch = line.match(/^\*\*Q:\s*(.+?)\*\*$/);
-            const aMatch = line.match(/^A:\s*(.+)$/);
-
-            if (qMatch) {
-                currentQ = qMatch[1];
-            } else if (aMatch && currentQ) {
-                pairs.push({ q: currentQ, a: aMatch[1] });
-                currentQ = null;
+            const headerMatch = line.match(/^##\s+(.+)$/);
+            
+            if (headerMatch) {
+                if (currentSection) {
+                    sections.push(currentSection);
+                }
+                currentSection = { title: headerMatch[1], content: [] };
+            } else if (currentSection && line.trim()) {
+                currentSection.content.push(line);
             }
         }
+        
+        // Add the last section
+        if (currentSection) {
+            sections.push(currentSection);
+        }
 
-        if (pairs.length === 0) {
-            container.innerHTML = '<p style="color: var(--cream); opacity: 0.6; text-transform: none;">FAQ coming soon...</p>';
+        if (sections.length === 0) {
+            container.innerHTML = '<p style="color: var(--deep-blue); opacity: 0.6; text-transform: none;">faq coming soon...</p>';
             return;
         }
 
-        container.innerHTML = pairs.map((pair) => {
-            const tilt = ((Math.random() - 0.5) * 3).toFixed(1);
+        // Random tilts for each card
+        const tilts = [-2.5, 1.8, -1.2, 2.8, -3.2, 1.5];
+
+        container.innerHTML = sections.map((section, i) => {
+            const tilt = tilts[i % tilts.length];
+            const content = section.content.map(p => `<p>${p}</p>`).join('');
             return `
-                <div class="faq-item" style="--tilt: ${tilt}deg">
-                    <div class="faq-question" onclick="toggleFAQ(this)">${pair.q}</div>
-                    <div class="faq-answer">${pair.a}</div>
+                <div class="faq-card float float-sm" style="--tilt: ${tilt}deg">
+                    <h3>${section.title}</h3>
+                    ${content}
                 </div>
             `;
         }).join('');
     } catch (err) {
         console.error('Error loading FAQ:', err);
     }
-}
-
-function toggleFAQ(el) {
-    const item = el.parentElement;
-    document.querySelectorAll('.faq-item.open').forEach(other => {
-        if (other !== item) other.classList.remove('open');
-    });
-    item.classList.toggle('open');
 }
