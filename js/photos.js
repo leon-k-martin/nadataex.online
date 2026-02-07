@@ -1,10 +1,11 @@
 // ===== PRODUCT PHOTOS — discovers from static/img/products/ =====
 
-// Mosaic size pattern for visual variety
+// Mosaic size pattern — some cards span 2 rows for variety
+// dense packing ensures no holes
 const MOSAIC_PATTERN = [
-    'mosaic-wide', 'mosaic-reg', 'mosaic-reg', 'mosaic-tall',
-    'mosaic-reg',  'mosaic-wide', 'mosaic-reg', 'mosaic-reg',
-    'mosaic-reg',  'mosaic-tall', 'mosaic-reg', 'mosaic-reg',
+    '', '', 'mosaic-tall', '',
+    '', '', '', '',
+    'mosaic-tall', '', '', '',
 ];
 
 let _productPhotos = []; // cached after first load
@@ -75,6 +76,10 @@ function renderProducts() {
     }).join('');
 }
 
+// SVG icons for view toggle
+const ICON_SCROLL = '<svg width="18" height="18" viewBox="0 0 18 18"><rect x="1" y="4" width="16" height="10" rx="1" fill="currentColor"/></svg>';
+const ICON_MOSAIC = '<svg width="18" height="18" viewBox="0 0 18 18"><rect x="1" y="1" width="7" height="7" rx="1" fill="currentColor"/><rect x="10" y="1" width="7" height="7" rx="1" fill="currentColor"/><rect x="1" y="10" width="7" height="7" rx="1" fill="currentColor"/><rect x="10" y="10" width="7" height="7" rx="1" fill="currentColor"/></svg>';
+
 // Toggle between scroll and mosaic view
 function initViewToggle() {
     const toggle = document.getElementById('view-toggle');
@@ -82,11 +87,15 @@ function initViewToggle() {
     const grid = document.getElementById('product-grid');
     if (!toggle || !section || !grid) return;
 
+    // Start showing mosaic icon (click to switch TO mosaic)
+    toggle.innerHTML = ICON_MOSAIC;
+
     toggle.addEventListener('click', () => {
         const goMosaic = !grid.classList.contains('mosaic');
         grid.classList.toggle('mosaic', goMosaic);
         section.classList.toggle('mosaic-view', goMosaic);
-        toggle.textContent = goMosaic ? 'scroll' : 'mosaic';
+        // Show the icon of the OTHER view (what you'd switch to)
+        toggle.innerHTML = goMosaic ? ICON_SCROLL : ICON_MOSAIC;
         renderProducts();
     });
 }
