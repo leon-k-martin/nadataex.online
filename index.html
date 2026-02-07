@@ -60,6 +60,9 @@
 
     <!-- HERO SECTION -->
     <section id="hero">
+        <div class="hero-slideshow" id="hero-slideshow">
+            <!-- Slideshow images loaded dynamically -->
+        </div>
         <div class="hero-content">
             <img src="static/img/nada_logo.png" alt="NADAtäx upcycling" class="hero-logo float float-lg float-slow">
         </div>
@@ -134,8 +137,21 @@
     <section id="contact">
         <h2>contact</h2>
         <div class="contact-content">
-            <form class="contact-form float float-sm" id="contact-form" action="https://formspree.io/f/mdalowoe"
+            <form class="contact-form float float-sm" id="contact-form" action="https://formspree.io/f/xjgevpwl"
                 method="POST">
+                <div class="form-intro">
+                    <p>You want to have a bag or have a cooperation in mind?<br>Contact me here</p>
+                </div>
+                <div class="form-checkboxes">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="interest[]" value="I want a bag">
+                        <span>I want a bag</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="interest[]" value="I want a cooperation">
+                        <span>I want a cooperation</span>
+                    </label>
+                </div>
                 <input type="text" name="name" placeholder="your name" required>
                 <input type="email" name="_replyto" placeholder="your email" required>
                 <textarea name="message" placeholder="your message" rows="5" required></textarea>
@@ -188,6 +204,7 @@
 
     <!-- JS modules -->
     <script src="js/float.js"></script>
+    <script src="js/slideshow.js"></script>
     <script src="js/about.js"></script>
     <script src="js/faq.js"></script>
     <script src="js/photos.js"></script>
