@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHeaderBehavior();
     initContactForm();
     initViewToggle();
+    initFAQToggle();
     initLightbox();
     initScrollHint();
 
@@ -30,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function initScrollHint() {
     const scrollHint = document.getElementById('scroll-hint');
     const productGrid = document.getElementById('product-grid');
-    
+
     if (!scrollHint || !productGrid) return;
-    
+
     let hasScrolled = false;
-    
+
     productGrid.addEventListener('scroll', () => {
         if (!hasScrolled && productGrid.scrollLeft > 10) {
             hasScrolled = true;
@@ -43,7 +44,7 @@ function initScrollHint() {
             sessionStorage.setItem('designsScrolled', 'true');
         }
     });
-    
+
     // Check if user has already scrolled in this session
     if (sessionStorage.getItem('designsScrolled') === 'true') {
         scrollHint.classList.add('hidden');

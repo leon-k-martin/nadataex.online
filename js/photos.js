@@ -110,6 +110,7 @@ function openLightbox(index) {
     const lb = document.getElementById('lightbox');
     const img = document.getElementById('lightbox-img');
     if (!lb || !img || _productPhotos.length === 0) return;
+    lb._isFAQ = false;
     _lightboxIndex = index;
     img.src = _productPhotos[_lightboxIndex];
     lb.classList.add('open');
@@ -124,6 +125,12 @@ function closeLightbox() {
 }
 
 function lightboxNav(dir) {
+    const lb = document.getElementById('lightbox');
+    if (lb && lb._isFAQ && lb._faqSources) {
+        lb._faqIndex = (lb._faqIndex + dir + lb._faqSources.length) % lb._faqSources.length;
+        document.getElementById('lightbox-img').src = lb._faqSources[lb._faqIndex];
+        return;
+    }
     if (_productPhotos.length === 0) return;
     _lightboxIndex = (_lightboxIndex + dir + _productPhotos.length) % _productPhotos.length;
     document.getElementById('lightbox-img').src = _productPhotos[_lightboxIndex];
