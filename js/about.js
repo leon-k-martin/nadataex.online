@@ -41,13 +41,18 @@ async function loadAbout() {
         container.innerHTML = html;
 
         // Auto-fit font size so text fills the box without overflow
-        fitAboutText(container);
+        // Small delay to let layout settle before measuring
+        requestAnimationFrame(() => {
+            fitAboutText(container);
+        });
         window.addEventListener('resize', () => fitAboutText(container));
 
         if (toggle) {
             toggle.addEventListener('click', () => {
                 const showingDe = container.classList.toggle('show-de');
                 toggle.textContent = showingDe ? 'en' : 'de';
+                // Re-fit after language toggle since text length differs
+                requestAnimationFrame(() => fitAboutText(container));
             });
         }
     } catch (err) {
@@ -55,25 +60,42 @@ async function loadAbout() {
     }
 }
 
-// Dynamically scale font-size so about text fits its container without overflow
+// Dynamically scale font-size so about text fits its container without overflow.
+// ALL text must always be visible — font shrinks as far as needed.
 function fitAboutText(el) {
-    let lo = 0.5;   // rem min
-    let hi = 1.6;   // rem max
+    const MIN_FONT = 0.35;  // rem — absolute minimum
+    const MAX_FONT = 1.5;   // rem — ideal maximum
+    let lo = MIN_FONT;
+    let hi = MAX_FONT;
 
-    function isOverflowing(element) {
-        return element.scrollHeight > element.clientHeight + 1 ||
-               element.scrollWidth > element.clientWidth + 1;
+    // Temporarily allow overflow so we can measure true content size
+    const origOverflow = el.style.overflow;
+    el.style.overflow = 'auto';
+
+    function isOverflowing() {
+        // Multi-column overflow shows as scrollWidth > clientWidth
+        // Normal overflow shows as scrollHeight > clientHeight
+        return el.scrollHeight > el.clientHeight + 2 ||
+               el.scrollWidth > el.clientWidth + 2;
     }
 
     // Binary search for the largest font-size that doesn't overflow
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 25; i++) {
         const mid = (lo + hi) / 2;
         el.style.fontSize = mid + 'rem';
-        if (isOverflowing(el)) {
+        el.style.lineHeight = mid > 0.7 ? '1.7' : '1.5';
+        // Force layout recalc
+        void el.offsetHeight;
+        if (isOverflowing()) {
             hi = mid;
         } else {
             lo = mid;
         }
     }
+
+    // Use the last safe size
     el.style.fontSize = lo + 'rem';
+    el.style.lineHeight = lo > 0.7 ? '1.7' : '1.5';
+    // Restore overflow to hidden so text is never clipped by scroll
+    el.style.overflow = 'hidden';
 }
