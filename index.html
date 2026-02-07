@@ -27,8 +27,15 @@
     <header id="main-header">
         <nav class="header-nav">
             <a href="#hero" class="nav-logo">
-                <img src="static/img/logo/nada_logo_black.png" alt="NADAtäx" class="header-logo">
+                <img src="static/img/logo/nada_logo_blue.png" alt="NADAtäx" class="header-logo">
             </a>
+
+            <!-- Quick links always visible -->
+            <div class="header-icons">
+                <a href="#hero" class="header-icon" title="home"><img src="static/img/icons/home.png" alt="home"></a>
+                <a href="#contact" class="header-icon" title="contact"><img src="static/img/icons/contact.png" alt="contact"></a>
+                <a href="https://instagram.com/nadataex" target="blank" rel="noopener" class="header-icon" title="instagram"><img src="static/img/icons/instagram.png" alt="instagram"></a>
+            </div>
 
             <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
                 <svg class="wave-line" viewBox="0 0 30 6" preserveAspectRatio="none">
@@ -44,17 +51,30 @@
                         stroke-width="2.5" stroke-linecap="round" />
                 </svg>
             </button>
+
             <ul class="nav-links" id="nav-links">
-                <li class="nav-icon"><a href="#hero" title="home"><img src="static/img/icons/home.png" alt="home"></a>
+                <li class="nav-link-home">
+                    <a href="#hero" class="icon-link" aria-label="home">
+                        <img src="static/img/icons/home.png" alt="home">
+                        <span class="sr-only">home</span>
+                    </a>
                 </li>
                 <li><a href="#designs">designs</a></li>
                 <li><a href="#about">about</a></li>
                 <li><a href="#faq">faq</a></li>
-                <li class="nav-icon"><a href="#contact" title="contact"><img src="static/img/icons/contact.png"
-                            alt="contact"></a></li>
-                <li class="nav-icon"><a href="https://instagram.com/nadataex" target="blank" rel="noopener"
-                        title="instagram"><img src="static/img/icons/instagram.png" alt="instagram"></a></li>
-                <li class="nav-icon theme-toggle-wrapper">
+                <li class="nav-link-contact">
+                    <a href="#contact" class="icon-link" aria-label="contact">
+                        <img src="static/img/icons/contact.png" alt="contact">
+                        <span class="sr-only">contact</span>
+                    </a>
+                </li>
+                <li class="nav-link-instagram">
+                    <a href="https://instagram.com/nadataex" target="_blank" rel="noopener" class="icon-link" aria-label="instagram">
+                        <img src="static/img/icons/instagram.png" alt="instagram">
+                        <span class="sr-only">instagram</span>
+                    </a>
+                </li>
+                <li class="nav-theme-toggle">
                     <button class="theme-toggle" id="theme-toggle" title="switch theme">
                         <span class="theme-icon-blue"></span>
                         <span class="theme-icon-white"></span>

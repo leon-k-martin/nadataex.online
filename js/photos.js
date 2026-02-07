@@ -164,8 +164,11 @@ function initViewToggle() {
     const grid = document.getElementById('product-grid');
     if (!toggle || !section || !grid) return;
 
-    // Start showing mosaic icon (click to switch TO mosaic)
-    toggle.innerHTML = ICON_MOSAIC;
+    // Start in mosaic view by default
+    grid.classList.add('mosaic');
+    section.classList.add('mosaic-view');
+    // Show scroll icon (click to switch TO scroll view)
+    toggle.innerHTML = ICON_SCROLL;
 
     toggle.addEventListener('click', () => {
         const goMosaic = !grid.classList.contains('mosaic');

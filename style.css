@@ -11,6 +11,18 @@
     box-sizing: border-box;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 76px;
@@ -27,11 +39,11 @@ html {
     --white: #ffffff;
     --font-main: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 
-    /* Theme colors (blue is default) */
-    --bg-overlay: rgba(74, 144, 217, 0.90);
-    --header-bg: rgba(74, 144, 217, 0.92);
-    --wave-fill: #0818a8;
-    --ticker-bg: rgba(8, 24, 168, 0.9);
+    /* Theme colors (white is default) */
+    --bg-overlay: rgba(255, 255, 255, 0.92);
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --wave-fill: rgba(255, 255, 255, 0.5);
+    --ticker-bg: rgba(255, 255, 255, 0.95);
 }
 
 body {
@@ -90,9 +102,10 @@ body:active {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: var(--header-bg);
+    background: url('static/img/textures/plane_weiss.jpg') center/cover;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    /* border-bottom: 2px solid var(--deep-blue); */
     border-bottom: 3px dashed var(--deep-blue);
     transition: background 0.4s ease;
 }
@@ -127,6 +140,28 @@ body:active {
     align-items: center;
 }
 
+.nav-links .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 4px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-links .icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.nav-theme-toggle {
+    display: flex;
+    align-items: center;
+}
+
 .nav-links a {
     color: var(--deep-blue);
     text-decoration: none;
@@ -135,38 +170,48 @@ body:active {
     text-transform: lowercase;
     letter-spacing: 1px;
     padding: 6px 12px;
-    border: 2px dashed transparent;
+    border-radius: 4px;
     transition: all 0.2s ease;
 }
 
-.nav-links a:hover {
-    border-color: var(--red);
-    transform: rotate(-2deg);
-    color: var(--cream);
+.nav-links a:hover,
+.nav-links .icon-link:hover {
+    color: var(--water-blue);
+    background: rgba(74, 144, 217, 0.1);
 }
 
-/* Icon integrated into nav */
-.nav-icon a {
+/* Header icons — mobile only (desktop uses nav-links icons) */
+.header-icons {
+    display: none;
+    align-items: center;
+    gap: 18px;
+    margin-left: auto;
+}
+
+.header-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     padding: 0;
     border: none;
     transition: all 0.3s ease;
+    background: transparent !important;
 }
 
-.nav-icon:nth-of-type(1) a { transform: rotate(-4deg); }
-.nav-icon:nth-of-type(2) a { transform: rotate(3deg); }
-.nav-icon:nth-of-type(3) a { transform: rotate(-3deg); }
+.header-icon:nth-of-type(1) { transform: rotate(-3deg); }
+.header-icon:nth-of-type(2) { transform: rotate(2deg); }
+.header-icon:nth-of-type(3) { transform: rotate(-2deg); }
 
-.nav-icon a:hover {
-    transform: rotate(0deg) scale(1.15);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+.header-icon:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+    background: transparent !important;
+    border: none !important;
 }
 
-.nav-icon img {
+.header-icon img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -207,7 +252,7 @@ section {
     align-items: flex-start;
     position: relative;
     z-index: 1;
-    width: 100vw;
+    width: 100%;
     min-height: calc(100vh - 76px);
     height: calc(100vh - 76px);
     overflow: hidden;
@@ -243,9 +288,9 @@ section {
 .view-toggle {
     color: var(--deep-blue);
     cursor: pointer;
-    border: 2px dashed var(--deep-blue);
+    border: 2px solid var(--deep-blue);
     padding: 4px 6px 2px;
-    transform: rotate(2deg);
+    border-radius: 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -280,7 +325,7 @@ h2 {
 
 /* ===== WAVE DIVIDERS ===== */
 .wave-divider {
-    width: 100vw;
+    width: calc(100% + 40px);
     margin-left: -20px;
     margin-top: auto;
     line-height: 0;
@@ -290,9 +335,10 @@ h2 {
 }
 
 #designs .wave-divider {
-    position: relative;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     z-index: 10;
     margin-left: 0;
+    width: 100%;
 }
 
 .wave-divider svg {
@@ -456,8 +502,8 @@ h2 {
     font-weight: bold;
     text-transform: lowercase;
     letter-spacing: 2px;
-    transform: rotate(-2deg);
-    border: 3px dashed var(--red);
+    border: 2px solid var(--water-blue);
+    border-radius: 8px;
     padding: 6px 16px;
     background: rgba(245, 240, 232, 0.85);
     backdrop-filter: blur(4px);
@@ -549,7 +595,7 @@ h2 {
 }
 
 .product-card:hover {
-    transform: scale(0.98);
+    transform: scale(1.02);
     z-index: 10;
 }
 
@@ -583,7 +629,7 @@ h2 {
 }
 
 .product-grid.mosaic .product-card:hover {
-    transform: scale(0.98) !important;
+    transform: scale(1.5) !important;
 }
 
 .product-grid.mosaic .product-card img {
@@ -602,7 +648,8 @@ h2 {
     justify-content: center;
     color: var(--warm-grey);
     font-size: 0.9rem;
-    border: 2px dashed var(--warm-grey);
+    border: 2px solid var(--warm-grey);
+    border-radius: 4px;
 }
 
 /* ===== ABOUT SECTION ===== */
@@ -767,9 +814,10 @@ h2 {
 }
 
 .stockist-card a {
-    color: var(--red);
+    color: var(--water-blue);
     text-decoration: none;
-    border-bottom: 2px dashed var(--red);
+    border-bottom: 2px solid var(--water-blue);
+    transition: all 0.2s ease;
 }
 
 .stockist-card a:hover {
@@ -829,8 +877,8 @@ h2 {
 }
 
 .faq-card:hover {
-    transform: rotate(0deg) translateY(-8px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .faq-card h3 {
@@ -840,14 +888,14 @@ h2 {
     text-transform: lowercase;
     font-weight: bold;
     letter-spacing: 2px;
-    border-bottom: 2px dashed var(--red);
+    border-bottom: 2px solid var(--water-blue);
     padding-bottom: 8px;
     text-align: center;
 }
 
 .faq-card p {
     color: var(--deep-blue);
-    font-size: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     line-height: 1.7;
     text-transform: none;
     margin: 0;
@@ -962,7 +1010,8 @@ h2 {
     height: 1.5rem;
     cursor: pointer;
     accent-color: var(--deep-blue);
-    border: 2px dashed var(--red);
+    border: 2px solid var(--red);
+    border-radius: 4px;
 }
 
 .checkbox-label:hover {
@@ -975,6 +1024,7 @@ h2 {
     font-size: clamp(1rem, 1.6vw, 1.2rem);
     padding: clamp(0.9rem, 1.5vw, 1.2rem) clamp(1.1rem, 1.8vw, 1.5rem);
     border: clamp(2px, 0.25vw, 3px) dashed var(--red);
+    border-radius: 6px;
     background: url('static/img/textures/plane_weiss.jpg') center/cover;
     color: var(--deep-blue);
     text-transform: lowercase;
@@ -1005,7 +1055,8 @@ h2 {
     padding: clamp(0.9rem, 1.5vw, 1.2rem) clamp(1.8rem, 3vw, 2.5rem);
     background: var(--cream);
     color: var(--deep-blue);
-    border: clamp(2px, 0.25vw, 3px) dashed var(--red);
+    border: clamp(2px, 0.25vw, 3px) solid var(--red);
+    border-radius: 6px;
     cursor: url('static/cursor/cursor_open.png') 16 16, pointer;
     transition: all 0.3s ease;
     text-transform: lowercase;
@@ -1013,10 +1064,10 @@ h2 {
 }
 
 .contact-form button:hover {
-    background: var(--white);
-    border-color: var(--deep-blue);
-    transform: translateY(-0.15rem);
-    box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.2);
+    background: var(--deep-blue);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .contact-form button:active {
@@ -1043,7 +1094,7 @@ h2 {
 .contact-link:hover {
     background: var(--cream);
     color: var(--deep-blue);
-    transform: rotate(1deg) translateY(-4px);
+    transform: translateY(-2px);
 }
 
 /* ===== FOOTER ===== */
@@ -1101,7 +1152,7 @@ footer {
     text-transform: lowercase;
     font-weight: bold;
     letter-spacing: 2px;
-    border-bottom: 2px dashed var(--red);
+    border-bottom: 2px dashed var(--water-blue);
     padding-bottom: 8px;
 }
 
@@ -1119,9 +1170,9 @@ footer {
 }
 
 .impressum-card a {
-    color: var(--red);
+    color: var(--water-blue);
     text-decoration: none;
-    border-bottom: 2px dashed var(--red);
+    border-bottom: 2px dashed var(--water-blue);
     transition: all 0.2s ease;
 }
 
@@ -1165,7 +1216,8 @@ footer {
     left: 0;
     right: 0;
     z-index: 900;
-    background: var(--ticker-bg);
+    background: linear-gradient(rgba(74, 144, 217, 0.9), rgba(74, 144, 217, 0.9)),
+        url('static/img/textures/plane_weiss.jpg') center/cover;
     color: var(--cream);
     overflow: hidden;
     height: 42px;
@@ -1233,10 +1285,14 @@ footer {
 
 .ripple {
     position: absolute;
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(8, 24, 168, 0.55);
     border-radius: 50%;
     animation: ripple-expand 2s ease-out forwards;
     pointer-events: none;
+}
+
+body.theme-blue .ripple {
+    border-color: rgba(255, 255, 255, 0.45);
 }
 
 @keyframes ripple-expand {
@@ -1257,10 +1313,52 @@ footer {
     }
 }
 
+@media (max-width: 1024px) {
+    .faq-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
     .mobile-menu-toggle {
         display: flex;
+        order: 3;
+    }
+
+    .header-nav {
+        flex-wrap: nowrap;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 18px;
+        margin: 0 auto;
+        justify-content: center;
+    }
+
+    /* Show home/contact/instagram text in mobile menu */
+    .nav-link-home,
+    .nav-link-contact,
+    .nav-link-instagram {
+        display: list-item;
+    }
+
+    /* Use text labels inside mobile menu */
+    .nav-links .icon-link {
+        width: auto;
+        height: auto;
+        padding: 6px 12px;
+    }
+
+    .nav-links .icon-link img,
+    .nav-links .icon-link .sr-only {
+        display: none;
+    }
+
+    .header-icon {
+        width: 32px;
+        height: 32px;
     }
 
     .nav-links {
@@ -1269,12 +1367,16 @@ footer {
         top: 100%;
         left: 0;
         right: 0;
-        background: rgba(74, 144, 217, 0.95);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(8px);
         flex-direction: column;
         padding: 15px 20px;
         gap: 10px;
         border-bottom: 3px dashed var(--deep-blue);
+    }
+
+    body.theme-blue .nav-links {
+        background: rgba(74, 144, 217, 0.95);
     }
 
     .nav-links.open {
@@ -1286,10 +1388,12 @@ footer {
         padding: 8px 0;
     }
 
-    .nav-icon a {
-        width: 32px;
-        height: 32px;
-        margin: 4px auto;
+    .nav-theme-toggle {
+        display: flex;
+        justify-content: center;
+        padding: 8px 0;
+        margin-top: 4px;
+        border-top: 1px dashed var(--deep-blue);
     }
 
     #designs {
@@ -1315,7 +1419,7 @@ footer {
     }
 
     .faq-cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
     }
 
@@ -1448,10 +1552,6 @@ footer {
 }
 
 /* ===== THEME TOGGLE BUTTON ===== */
-.theme-toggle-wrapper {
-    margin-left: 8px;
-}
-
 .theme-toggle {
     display: flex;
     align-items: center;
@@ -1494,53 +1594,83 @@ footer {
     transform: scale(0);
 }
 
-/* White theme active state for toggle */
-body.theme-white .theme-icon-blue {
+/* Blue theme active state for toggle — preview white (what you'll switch to) */
+body.theme-blue .theme-icon-blue {
     opacity: 0;
     transform: scale(0);
 }
 
-body.theme-white .theme-icon-white {
+body.theme-blue .theme-icon-white {
     opacity: 1;
     transform: scale(1);
 }
 
-/* ===== WHITE THEME ===== */
-body.theme-white {
-    --bg-overlay: rgba(255, 255, 255, 0.92);
-    --header-bg: rgba(255, 255, 255, 0.92);
-    --ticker-bg: rgba(255, 255, 255, 0.95);
+/* ===== BLUE THEME ===== */
+body.theme-blue {
+    --bg-overlay: rgba(74, 144, 217, 0.90);
+    --header-bg: rgba(74, 144, 217, 0.92);
+    --ticker-bg: rgba(8, 24, 168, 0.9);
 }
 
-body.theme-white .water-overlay {
+body.theme-blue .water-overlay {
     background: var(--bg-overlay);
 }
 
-body.theme-white #main-header {
-    background: var(--header-bg);
-    border-bottom-color: var(--water-blue);
+body.theme-blue #main-header {
+    background: url('static/img/textures/plane_weiss.jpg') center/cover;
+    border-bottom-color: var(--deep-blue);
 }
 
-body.theme-white .nav-links.open {
-    background: rgba(255, 255, 255, 0.95);
+body.theme-blue .nav-links.open {
+    background: rgba(74, 144, 217, 0.95);
 }
 
-body.theme-white .wave-divider svg path {
-    fill: rgba(255, 255, 255, 0.5);
+body.theme-blue .wave-divider svg path {
+    fill: rgba(8, 24, 168, 0.35);
 }
 
-body.theme-white .review-ticker {
+body.theme-blue .review-ticker {
     background: var(--ticker-bg);
-    color: var(--deep-blue);
-    border-top-color: var(--deep-blue);
+    color: var(--cream);
+    border-top-color: var(--water-blue);
 }
 
-body.theme-white .review-ticker::before {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0,4 Q15,0 30,4 Q45,8 60,4 Q75,0 90,4 Q105,8 120,4' fill='none' stroke='rgba(255,255,255,0.95)' stroke-width='8'/%3E%3C/svg%3E") repeat-x;
+body.theme-blue .review-ticker::before {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0,4 Q15,0 30,4 Q45,8 60,4 Q75,0 90,4 Q105,8 120,4' fill='none' stroke='rgba(8,24,168,0.9)' stroke-width='8'/%3E%3C/svg%3E") repeat-x;
     background-size: 120px 8px;
 }
 
-body.theme-white .ticker-item::before,
-body.theme-white .ticker-item::after {
-    color: var(--water-blue);
+body.theme-blue .ticker-item::before,
+body.theme-blue .ticker-item::after {
+    color: var(--water-light);
+}
+
+/* Blue theme: hover shows cream (visible on blue) */
+body.theme-blue .nav-links a:hover {
+    color: var(--cream);
+    border-color: var(--red);
+    background: transparent;
+}
+
+/* Blue theme: restore red accents */
+body.theme-blue .hint-text {
+    border-color: var(--red);
+}
+
+body.theme-blue .faq-card h3 {
+    border-bottom-color: var(--red);
+}
+
+body.theme-blue .stockist-card a {
+    color: var(--red);
+    border-bottom-color: var(--red);
+}
+
+body.theme-blue .impressum-card h3 {
+    border-bottom-color: var(--red);
+}
+
+body.theme-blue .impressum-card a {
+    color: var(--red);
+    border-bottom-color: var(--red);
 }

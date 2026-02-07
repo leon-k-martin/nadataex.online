@@ -52,23 +52,23 @@ function initHeaderBehavior() {
     // Header stays fixed via CSS, no scroll-hide behavior
 }
 
-// Theme toggle — switch between blue and white design
+// Theme toggle — switch between white (default) and blue design
 function initThemeToggle() {
     const toggle = document.getElementById('theme-toggle');
     if (!toggle) return;
 
-    // Check for saved preference
+    // Check for saved preference (blue requires class, white is default)
     const savedTheme = localStorage.getItem('nadatax-theme');
-    if (savedTheme === 'white') {
-        document.body.classList.add('theme-white');
+    if (savedTheme === 'blue') {
+        document.body.classList.add('theme-blue');
     }
 
     toggle.addEventListener('click', () => {
-        document.body.classList.toggle('theme-white');
+        document.body.classList.toggle('theme-blue');
         
         // Save preference
-        const isWhite = document.body.classList.contains('theme-white');
-        localStorage.setItem('nadatax-theme', isWhite ? 'white' : 'blue');
+        const isBlue = document.body.classList.contains('theme-blue');
+        localStorage.setItem('nadatax-theme', isBlue ? 'blue' : 'white');
     });
 }
 
