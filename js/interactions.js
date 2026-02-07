@@ -5,16 +5,26 @@ function initRipples() {
     const container = document.getElementById('ripple-container');
     if (!container) return;
 
-    document.addEventListener('click', (e) => {
+    document.addEventListener('mousedown', (e) => {
         if (e.target.closest('a, button, .faq-question, .nav-links, .product-card, .lang-toggle')) return;
 
-        const ripple = document.createElement('div');
-        ripple.className = 'ripple';
-        ripple.style.left = e.clientX + 'px';
-        ripple.style.top = e.clientY + 'px';
-        container.appendChild(ripple);
-
-        ripple.addEventListener('animationend', () => ripple.remove());
+        // Create multiple concentric ripples from the same point (like a stone in water)
+        const numRipples = 3;
+        
+        for (let i = 0; i < numRipples; i++) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            
+            // All ripples start from the exact same point
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            
+            // Stagger the animation start time to create wave effect
+            ripple.style.animationDelay = (i * 0.25) + 's';
+            
+            container.appendChild(ripple);
+            ripple.addEventListener('animationend', () => ripple.remove());
+        }
     });
 }
 
@@ -40,4 +50,39 @@ function initMobileMenu() {
 // Header — always fixed, no hide on scroll
 function initHeaderBehavior() {
     // Header stays fixed via CSS, no scroll-hide behavior
+}
+
+// Contact form handler — ready for backend integration
+function initContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const data = {
+            name: formData.get('name'),
+            email: formData.get('email'),
+            message: formData.get('message')
+        };
+        
+        // Log to console (replace with actual email service)
+        console.log('Form submission:', data);
+        
+        // Show success feedback
+        const button = form.querySelector('button');
+        const originalText = button.textContent;
+        button.textContent = 'sent! ✓';
+        button.style.background = 'var(--water-blue)';
+        
+        // Reset form
+        form.reset();
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '';
+        }, 2000);
+    });
 }
