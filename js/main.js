@@ -64,6 +64,7 @@ function initScrollHint() {
 // ===== CURSOR TOUCH/CROSS-DEVICE =====
 function initCursorTouch() {
     let openTimeout;
+    let downAt = 0;
     const closeCursor = () => {
         if (openTimeout) clearTimeout(openTimeout);
         document.body.classList.add('cursor-closed');
@@ -75,9 +76,18 @@ function initCursorTouch() {
         }, delay);
     };
 
-    // Pointer events cover mouse, pen, touch. Give tap a brief linger before reopening.
-    document.addEventListener('pointerdown', closeCursor, { passive: true });
-    document.addEventListener('pointerup', () => openCursor(180), { passive: true });
+    // Pointer events cover mouse, pen, touch. Give quick taps a brief linger; long holds reopen immediately.
+    document.addEventListener('pointerdown', () => {
+        downAt = performance.now();
+        closeCursor();
+    }, { passive: true });
+
+    document.addEventListener('pointerup', () => {
+        const heldFor = performance.now() - downAt;
+        const delay = heldFor > 220 ? 0 : 180;
+        openCursor(delay);
+    }, { passive: true });
+
     document.addEventListener('pointercancel', () => openCursor(0), { passive: true });
     document.addEventListener('pointerleave', () => openCursor(0), { passive: true });
 }
