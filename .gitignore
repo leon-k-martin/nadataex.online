@@ -19,3 +19,4 @@ venv/
 # Local development
 *.log
 npm-debug.log*
+static/img/products/*.JPG
