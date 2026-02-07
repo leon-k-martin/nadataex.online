@@ -52,6 +52,26 @@ function initHeaderBehavior() {
     // Header stays fixed via CSS, no scroll-hide behavior
 }
 
+// Theme toggle — switch between blue and white design
+function initThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    // Check for saved preference
+    const savedTheme = localStorage.getItem('nadatax-theme');
+    if (savedTheme === 'white') {
+        document.body.classList.add('theme-white');
+    }
+
+    toggle.addEventListener('click', () => {
+        document.body.classList.toggle('theme-white');
+        
+        // Save preference
+        const isWhite = document.body.classList.contains('theme-white');
+        localStorage.setItem('nadatax-theme', isWhite ? 'white' : 'blue');
+    });
+}
+
 // Contact form handler — Formspree integration
 function initContactForm() {
     const form = document.getElementById('contact-form');

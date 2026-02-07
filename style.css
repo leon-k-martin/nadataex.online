@@ -1165,13 +1165,14 @@ footer {
     left: 0;
     right: 0;
     z-index: 900;
-    background: rgba(8, 24, 168, 0.9);
+    background: var(--ticker-bg);
     color: var(--cream);
     overflow: hidden;
     height: 42px;
     display: flex;
     align-items: center;
     border-top: 2px dashed var(--water-blue);
+    transition: background 0.4s ease;
 }
 
 .review-ticker::before {
@@ -1444,4 +1445,102 @@ footer {
         font-size: clamp(0.85rem, 3.5vw, 1rem);
         padding: clamp(0.6rem, 2.5vw, 0.9rem) clamp(0.8rem, 3vw, 1.2rem);
     }
+}
+
+/* ===== THEME TOGGLE BUTTON ===== */
+.theme-toggle-wrapper {
+    margin-left: 8px;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: 2px dashed var(--deep-blue);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
+    border-color: var(--red);
+}
+
+.theme-icon-blue,
+.theme-icon-white {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.theme-icon-blue {
+    background: var(--water-blue);
+    opacity: 1;
+    transform: scale(1);
+}
+
+.theme-icon-white {
+    background: var(--white);
+    border: 1px solid var(--warm-grey);
+    opacity: 0;
+    transform: scale(0);
+}
+
+/* White theme active state for toggle */
+body.theme-white .theme-icon-blue {
+    opacity: 0;
+    transform: scale(0);
+}
+
+body.theme-white .theme-icon-white {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ===== WHITE THEME ===== */
+body.theme-white {
+    --bg-overlay: rgba(255, 255, 255, 0.92);
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --ticker-bg: rgba(255, 255, 255, 0.95);
+}
+
+body.theme-white .water-overlay {
+    background: var(--bg-overlay);
+}
+
+body.theme-white #main-header {
+    background: var(--header-bg);
+    border-bottom-color: var(--water-blue);
+}
+
+body.theme-white .nav-links.open {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body.theme-white .wave-divider svg path {
+    fill: rgba(255, 255, 255, 0.5);
+}
+
+body.theme-white .review-ticker {
+    background: var(--ticker-bg);
+    color: var(--deep-blue);
+    border-top-color: var(--deep-blue);
+}
+
+body.theme-white .review-ticker::before {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0,4 Q15,0 30,4 Q45,8 60,4 Q75,0 90,4 Q105,8 120,4' fill='none' stroke='rgba(255,255,255,0.95)' stroke-width='8'/%3E%3C/svg%3E") repeat-x;
+    background-size: 120px 8px;
+}
+
+body.theme-white .ticker-item::before,
+body.theme-white .ticker-item::after {
+    color: var(--water-blue);
 }

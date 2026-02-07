@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFAQToggle();
     initLightbox();
     initScrollHint();
+    initThemeToggle();
 
     // Randomize float delays after all dynamic content is loaded
     setTimeout(initFloats, 100);
