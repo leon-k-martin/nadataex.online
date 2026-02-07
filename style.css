@@ -716,11 +716,11 @@ footer {
     .stockist-cards { flex-direction: column; align-items: center; }
     .stockist-card { width: 80%; max-width: 280px; }
     .process-photo { width: 140px; height: 140px; }
-    .contact-content { 
-        max-width: 98%; 
+    .contact-content {
+        max-width: 98%;
         width: 98%;
     }
-    .contact-form { 
+    .contact-form {
         padding: clamp(1.5rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem);
     }
     h2 { font-size: 1.6rem; }
@@ -729,11 +729,11 @@ footer {
 @media (max-width: 480px) {
     .hero-logo { width: clamp(200px, 80vw, 350px); }
     .product-card { width: 95%; }
-    .contact-form { 
+    .contact-form {
         padding: clamp(1.2rem, 5vw, 1.8rem) clamp(0.8rem, 4vw, 1.2rem);
     }
     .contact-form input,
-    .contact-form textarea { 
+    .contact-form textarea {
         font-size: clamp(0.85rem, 3.5vw, 1rem);
         padding: clamp(0.6rem, 2.5vw, 0.9rem) clamp(0.8rem, 3vw, 1.2rem);
     }

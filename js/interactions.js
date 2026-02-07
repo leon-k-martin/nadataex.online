@@ -10,18 +10,18 @@ function initRipples() {
 
         // Create multiple concentric ripples from the same point (like a stone in water)
         const numRipples = 3;
-        
+
         for (let i = 0; i < numRipples; i++) {
             const ripple = document.createElement('div');
             ripple.className = 'ripple';
-            
+
             // All ripples start from the exact same point
             ripple.style.left = e.clientX + 'px';
             ripple.style.top = e.clientY + 'px';
-            
+
             // Stagger the animation start time to create wave effect
             ripple.style.animationDelay = (i * 0.25) + 's';
-            
+
             container.appendChild(ripple);
             ripple.addEventListener('animationend', () => ripple.remove());
         }
@@ -59,14 +59,14 @@ function initContactForm() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const button = form.querySelector('button');
         const originalText = button.textContent;
-        
+
         // Show loading state
         button.textContent = 'sending...';
         button.disabled = true;
-        
+
         try {
             // Submit to Formspree
             const formData = new FormData(form);
@@ -77,13 +77,13 @@ function initContactForm() {
                     'Accept': 'application/json'
                 }
             });
-            
+
             if (response.ok) {
                 // Success feedback
                 button.textContent = 'sent! ✓';
                 button.style.background = 'var(--water-blue)';
                 form.reset();
-                
+
                 // Reset button after 3 seconds
                 setTimeout(() => {
                     button.textContent = originalText;
@@ -97,7 +97,7 @@ function initContactForm() {
             // Error feedback
             button.textContent = 'error — try again';
             button.style.background = 'var(--red)';
-            
+
             setTimeout(() => {
                 button.textContent = originalText;
                 button.style.background = '';
