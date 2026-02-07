@@ -911,13 +911,113 @@ h2::after {
 /* ===== FOOTER ===== */
 footer {
     text-align: center;
-    padding: 20px;
-    padding-bottom: 70px;
+    padding: 40px 20px 80px;
     color: var(--deep-blue);
-    opacity: 0.6;
-    font-size: 0.85rem;
     position: relative;
     z-index: 1;
+}
+
+.impressum-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto 30px;
+}
+
+.impressum-card {
+    background: url('static/img/textures/plane_weiss.jpg') center/cover;
+    padding: 25px 30px;
+    border: 3px dashed var(--deep-blue);
+    border-radius: 3% 4% 2% 5% / 4% 2% 5% 3%;
+    transform: rotate(var(--tilt, 0deg));
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    min-width: 280px;
+    max-width: 400px;
+    flex: 1;
+}
+
+.impressum-card::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 10%;
+    right: 10%;
+    height: 10px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.impressum-card:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+}
+
+.impressum-card h3 {
+    font-size: 1.2rem;
+    color: var(--deep-blue);
+    margin-bottom: 15px;
+    text-transform: lowercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-bottom: 2px dashed var(--red);
+    padding-bottom: 8px;
+}
+
+.impressum-card p {
+    color: var(--deep-blue);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    text-transform: none;
+    margin: 8px 0;
+}
+
+.impressum-card p strong {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.impressum-card a {
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 2px dashed var(--red);
+    transition: all 0.2s ease;
+}
+
+.impressum-card a:hover {
+    color: var(--deep-blue);
+    border-color: var(--deep-blue);
+}
+
+.impressum-card .tax-info {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+.impressum-thanks {
+    text-align: left;
+}
+
+.copyright {
+    color: var(--deep-blue);
+    opacity: 0.5;
+    font-size: 0.85rem;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .impressum-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .impressum-card {
+        max-width: 90%;
+    }
 }
 
 /* ===== REVIEW TICKER (fixed bottom) ===== */
