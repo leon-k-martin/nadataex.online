@@ -936,8 +936,8 @@ h2 {
 .contact-form input,
 .contact-form textarea {
     font-family: var(--font-main);
-    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
-    padding: clamp(1.1rem, 1.8vw, 1.5rem) clamp(1.3rem, 2.2vw, 1.8rem);
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    padding: clamp(0.9rem, 1.5vw, 1.2rem) clamp(1.1rem, 1.8vw, 1.5rem);
     border: clamp(2px, 0.25vw, 3px) dashed var(--red);
     background: url('static/img/textures/plane_weiss.jpg') center/cover;
     color: var(--deep-blue);
@@ -959,14 +959,14 @@ h2 {
 
 .contact-form textarea {
     resize: vertical;
-    min-height: clamp(12rem, 20vh, 18rem);
+    min-height: clamp(8rem, 15vh, 12rem);
 }
 
 .contact-form button {
     font-family: var(--font-main);
-    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
     font-weight: bold;
-    padding: clamp(1.1rem, 1.8vw, 1.5rem) clamp(2rem, 3.5vw, 3rem);
+    padding: clamp(0.9rem, 1.5vw, 1.2rem) clamp(1.8rem, 3vw, 2.5rem);
     background: var(--cream);
     color: var(--deep-blue);
     border: clamp(2px, 0.25vw, 3px) dashed var(--red);
