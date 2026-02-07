@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NADAtäx — upcycling</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- WATER VIDEO BACKGROUND -->
+    <div class="water-bg">
+        <video class="water-video" autoplay muted loop playsinline>
+            <source src="static/video/water-bg.mp4" type="video/mp4">
+        </video>
+        <div class="water-overlay"></div>
+    </div>
+
+    <!-- HEADER WITH NAV -->
+    <header id="main-header">
+        <nav class="header-nav">
+            <a href="#hero" class="nav-logo">
+                <img src="nada_logo_sub.png" alt="NADAtäx" class="header-logo">
+            </a>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Menu">
+                <span class="wave-line"></span>
+                <span class="wave-line"></span>
+                <span class="wave-line"></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#designs">designs</a></li>
+                <li><a href="#about">about</a></li>
+                <li><a href="#stockists">stockists</a></li>
+                <li><a href="#faq">faq</a></li>
+                <li><a href="#contact">contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <div class="hero-content">
+            <img src="nada_logo.png" alt="NADAtäx upcycling" class="hero-logo">
+            <p class="tagline">upcycling</p>
+        </div>
+        <!-- Wave divider -->
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- DESIGNS SECTION -->
+    <section id="designs">
+        <h2>designs</h2>
+        <div class="product-grid" id="product-grid">
+            <!-- Product cards loaded dynamically from static/img/products/ -->
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about">
+        <h2>about <span class="lang-toggle" id="lang-toggle">de</span></h2>
+        <div class="about-content" id="about-content">
+            <!-- Loaded from content/about.md -->
+        </div>
+        <div class="process-collage" id="process-collage">
+            <!-- Process photos loaded dynamically -->
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- STOCKISTS SECTION -->
+    <section id="stockists">
+        <h2>stockists</h2>
+        <div class="stockist-cards">
+            <div class="stockist-card" style="--bob-delay: 0s; --tilt: -2deg;">
+                <h3>vintage safari</h3>
+                <p>nuremberg</p>
+            </div>
+            <div class="stockist-card" style="--bob-delay: 0.3s; --tilt: 1.5deg;">
+                <h3>frau wunderwald</h3>
+                <p>berlin</p>
+            </div>
+            <div class="stockist-card" style="--bob-delay: 0.6s; --tilt: -1deg;">
+                <h3>house of orange</h3>
+                <p>dresden</p>
+            </div>
+            <div class="stockist-card" style="--bob-delay: 0.9s; --tilt: 2.5deg;">
+                <h3>instagram</h3>
+                <p><a href="https://instagram.com/nadataex" target="_blank" rel="noopener">@nadataex</a></p>
+            </div>
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section id="faq">
+        <h2>faq</h2>
+        <div class="faq-accordion" id="faq-accordion">
+            <!-- FAQ entries loaded from content/faq.md -->
+        </div>
+        <div class="wave-divider">
+            <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,30 C200,60 400,0 600,30 C800,60 1000,0 1200,30 L1200,60 L0,60 Z" fill="var(--water-blue)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact">
+        <h2>contact</h2>
+        <div class="contact-content">
+            <a href="https://instagram.com/nadataex" target="_blank" rel="noopener" class="contact-link">instagram — @nadataex</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© NADAtäx 2026</p>
+    </footer>
+
+    <!-- REVIEW TICKER (fixed bottom) -->
+    <div class="review-ticker" id="review-ticker">
+        <div class="ticker-track" id="ticker-track">
+            <!-- Reviews loaded dynamically from content/reviews.json -->
+        </div>
+    </div>
+
+    <!-- RIPPLE CONTAINER -->
+    <div id="ripple-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
