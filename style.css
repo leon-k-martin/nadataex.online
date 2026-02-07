@@ -59,6 +59,10 @@ body {
     cursor: url('static/cursor/cursor_open.png') 16 16, crosshair;
 }
 
+body.cursor-closed {
+    cursor: url('static/cursor/cursor_closed.png') 16 16, crosshair;
+}
+
 body:active {
     cursor: url('static/cursor/cursor_closed.png') 16 16, crosshair;
 }

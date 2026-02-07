@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initLightbox();
     initScrollHint();
     initThemeToggle();
+    initCursorTouch();
 
     // Randomize float delays after all dynamic content is loaded
     setTimeout(initFloats, 100);
@@ -58,4 +59,25 @@ function initScrollHint() {
     });
 
     productGrid.addEventListener('scroll', hideHintIfNeeded, { passive: true });
+}
+
+// ===== CURSOR TOUCH/CROSS-DEVICE =====
+function initCursorTouch() {
+    let openTimeout;
+    const closeCursor = () => {
+        if (openTimeout) clearTimeout(openTimeout);
+        document.body.classList.add('cursor-closed');
+    };
+    const openCursor = (delay = 0) => {
+        if (openTimeout) clearTimeout(openTimeout);
+        openTimeout = setTimeout(() => {
+            document.body.classList.remove('cursor-closed');
+        }, delay);
+    };
+
+    // Pointer events cover mouse, pen, touch. Give tap a brief linger before reopening.
+    document.addEventListener('pointerdown', closeCursor, { passive: true });
+    document.addEventListener('pointerup', () => openCursor(180), { passive: true });
+    document.addEventListener('pointercancel', () => openCursor(0), { passive: true });
+    document.addEventListener('pointerleave', () => openCursor(0), { passive: true });
 }
