@@ -8,6 +8,4 @@ NADAtäx doesn't follow trends. It makes what feels necessary — quietly, susta
 
 ---
 
-NADAtäx upcycling ist ein Ein-Frau-Label aus Berlin-Moabit.
-
-*(TODO: vollständige deutsche Übersetzung hier einfügen)*
+Übersetzung kommt bald.
