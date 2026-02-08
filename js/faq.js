@@ -85,6 +85,8 @@ function initFAQToggle() {
             images.style.display = 'none';
             toggle.innerHTML = gridIcon;
             toggle.title = 'show images';
+            // Re-adjust columns now that cards are visible
+            requestAnimationFrame(() => adjustFaqGridColumns());
         }
     });
 
@@ -108,9 +110,16 @@ function adjustFaqGridColumns() {
     const count = cards.length;
     if (count === 0) return;
 
-    const containerWidth = grid.clientWidth;
-    const targetMin = 260; // align with CSS min width
-    const maxCols = Math.min(5, count); // cap to 5
+    // Use grid width, but fall back to parent section width if grid is hidden (display:none)
+    let containerWidth = grid.clientWidth;
+    if (containerWidth === 0) {
+        const section = grid.closest('section') || grid.parentElement;
+        containerWidth = section ? section.clientWidth - 40 : window.innerWidth - 40; // 40 = section padding
+    }
+    if (containerWidth <= 0) return;
+
+    const targetMin = 260;
+    const maxCols = Math.min(5, count);
 
     let cols = Math.max(1, Math.min(maxCols, Math.floor(containerWidth / targetMin)));
     cols = Math.min(cols, count);
@@ -126,8 +135,6 @@ function adjustFaqGridColumns() {
     }
 
     grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-
-    grid.style.gridTemplateColumns = `repeat(${chosen}, minmax(0, 1fr))`;
 }
 
 // Lightweight debounce helper
