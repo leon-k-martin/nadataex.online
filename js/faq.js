@@ -2,6 +2,7 @@
 
 async function loadFAQ() {
     const container = document.getElementById('faq-cards');
+    const toggle = document.getElementById('faq-lang-toggle');
     if (!container) return;
 
     try {
@@ -10,30 +11,41 @@ async function loadFAQ() {
 
         const markdown = await response.text();
 
+        // Check if there are language sections separated by ---
+        const langSections = markdown.split(/\n---\n/);
+        const enText = langSections[0] || '';
+        const deText = langSections[1] || '';
+
         // Parse sections: ## title followed by paragraphs
-        const sections = [];
-        const lines = markdown.split('\n');
-        let currentSection = null;
+        const parseSections = (text) => {
+            const sections = [];
+            const lines = text.split('\n');
+            let currentSection = null;
 
-        for (const line of lines) {
-            const headerMatch = line.match(/^##\s+(.+)$/);
+            for (const line of lines) {
+                const headerMatch = line.match(/^##\s+(.+)$/);
 
-            if (headerMatch) {
-                if (currentSection) {
-                    sections.push(currentSection);
+                if (headerMatch) {
+                    if (currentSection) {
+                        sections.push(currentSection);
+                    }
+                    currentSection = { title: headerMatch[1], content: [] };
+                } else if (currentSection && line.trim()) {
+                    currentSection.content.push(line);
                 }
-                currentSection = { title: headerMatch[1], content: [] };
-            } else if (currentSection && line.trim()) {
-                currentSection.content.push(line);
             }
-        }
 
-        // Add the last section
-        if (currentSection) {
-            sections.push(currentSection);
-        }
+            // Add the last section
+            if (currentSection) {
+                sections.push(currentSection);
+            }
+            return sections;
+        };
 
-        if (sections.length === 0) {
+        const enSections = parseSections(enText);
+        const deSections = parseSections(deText);
+
+        if (enSections.length === 0) {
             container.innerHTML = '<p style="color: var(--deep-blue); opacity: 0.6; text-transform: none;">faq coming soon...</p>';
             return;
         }
@@ -41,54 +53,78 @@ async function loadFAQ() {
         // Random tilts for each card
         const tilts = [-2.5, 1.8, -1.2, 2.8, -3.2, 1.5];
 
-        container.innerHTML = sections.map((section, i) => {
-            const tilt = tilts[i % tilts.length];
-            const content = section.content.map(p => `<p>${p}</p>`).join('');
-            return `
-                <div class="faq-card float float-sm" style="--tilt: ${tilt}deg">
-                    <h3>${section.title}</h3>
-                    ${content}
+        const renderSections = (sections, langClass) => {
+            return sections.map((section, i) => {
+                const tilt = tilts[i % tilts.length];
+                const content = section.content.map(p => `<p>${p}</p>`).join('');
+                return `
+                    <div class="faq-card faq-card-${langClass} float float-sm" style="--tilt: ${tilt}deg">
+                        <h3>${section.title}</h3>
+                        ${content}
                 </div>
             `;
         }).join('');
+        };
 
-        adjustFaqGridColumns();
-        window.addEventListener('resize', debounce(adjustFaqGridColumns, 150));
+        let html = renderSections(enSections, 'en');
+        if (deSections.length > 0) {
+            html += renderSections(deSections, 'de');
+        }
+
+        container.innerHTML = html;
+
+        // Re-init float delays for newly rendered cards
+        if (typeof initFloats === 'function') initFloats();
+
+        // Setup language toggle
+        const images = document.getElementById('faq-images');
+        if (toggle && images) {
+            const hasGermanContent = deSections.length > 0;
+            let showingText = false; // Start with images visible
+
+            toggle.addEventListener('click', () => {
+                showingText = !showingText;
+                toggle.textContent = showingText ? 'en' : 'de';
+
+                if (showingText) {
+                    // Show text cards, hide images
+                    container.style.display = '';
+                    images.style.display = 'none';
+                    // Only apply show-de class if German content exists
+                    if (hasGermanContent) {
+                        container.classList.add('show-de');
+                    }
+                    requestAnimationFrame(() => adjustFaqLayout());
+                } else {
+                    // Show English images, hide text
+                    container.style.display = 'none';
+                    images.style.display = '';
+                    container.classList.remove('show-de');
+                }
+            });
+        }
+
+        adjustFaqLayout();
+        window.addEventListener('resize', debounce(adjustFaqLayout, 150));
     } catch (err) {
         console.error('Error loading FAQ:', err);
+        container.innerHTML = '<p style="color: var(--deep-blue);">Error loading FAQ</p>';
     }
 }
 
-// ===== FAQ VIEW TOGGLE — switch between text cards and image tiles =====
+// ===== FAQ LAYOUT MANAGEMENT =====
 
 function initFAQToggle() {
-    const toggle = document.getElementById('faq-view-toggle');
+    // Adjust layout on init
     const cards = document.getElementById('faq-cards');
     const images = document.getElementById('faq-images');
-    if (!toggle || !cards || !images) return;
+    if (!cards || !images) return;
 
-    // SVG icons for the two states
-    const gridIcon = '<svg width="18" height="18" viewBox="0 0 18 18"><rect x="1" y="1" width="7" height="7" rx="1" fill="currentColor"/><rect x="10" y="1" width="7" height="7" rx="1" fill="currentColor"/><rect x="1" y="10" width="7" height="7" rx="1" fill="currentColor"/><rect x="10" y="10" width="7" height="7" rx="1" fill="currentColor"/></svg>';
-    const textIcon = '<svg width="18" height="18" viewBox="0 0 18 18"><rect x="1" y="3" width="16" height="2" rx="1" fill="currentColor"/><rect x="1" y="8" width="12" height="2" rx="1" fill="currentColor"/><rect x="1" y="13" width="14" height="2" rx="1" fill="currentColor"/></svg>';
+    // Show images by default (English), hide text cards
+    cards.style.display = 'none';
+    images.style.display = '';
 
-    let showingImages = true;
-
-    toggle.addEventListener('click', () => {
-        showingImages = !showingImages;
-        if (showingImages) {
-            cards.style.display = 'none';
-            images.style.display = '';
-            toggle.innerHTML = textIcon;
-            toggle.title = 'show text';
-        } else {
-            cards.style.display = '';
-            images.style.display = 'none';
-            toggle.innerHTML = gridIcon;
-            toggle.title = 'show images';
-            // Re-adjust columns now that cards are visible
-            requestAnimationFrame(() => adjustFaqGridColumns());
-        }
-    });
+    // No need to adjust images - they use natural CSS flex-wrap
 
     // Click-to-enlarge FAQ tiles using the existing lightbox
     const tiles = images.querySelectorAll('.faq-tile');
@@ -102,39 +138,39 @@ function initFAQToggle() {
     });
 }
 
-// Keep bottom row from having a single orphan card by adjusting column count dynamically
-function adjustFaqGridColumns() {
-    const grid = document.getElementById('faq-cards');
-    if (!grid) return;
-    const cards = grid.querySelectorAll('.faq-card');
-    const count = cards.length;
+// Unified layout adjuster for both FAQ images and cards to avoid X+1 orphans
+function adjustFaqLayout() {
+    // Only adjust text cards - let images use natural CSS flex-wrap
+    adjustFaqFlexItems('faq-cards', '.faq-card', 260);
+}
+
+function adjustFaqFlexItems(containerId, itemSelector, minWidth) {
+    const container = document.getElementById(containerId);
+    if (!container || container.style.display === 'none') return;
+
+    const items = container.querySelectorAll(itemSelector);
+    const count = items.length;
     if (count === 0) return;
 
-    // Use grid width, but fall back to parent section width if grid is hidden (display:none)
-    let containerWidth = grid.clientWidth;
-    if (containerWidth === 0) {
-        const section = grid.closest('section') || grid.parentElement;
-        containerWidth = section ? section.clientWidth - 40 : window.innerWidth - 40; // 40 = section padding
-    }
+    const containerWidth = container.clientWidth || container.offsetWidth;
     if (containerWidth <= 0) return;
 
-    const targetMin = 260;
-    const maxCols = Math.min(5, count);
+    // Calculate how many items fit per row
+    const gap = 20; // approximate gap
+    let perRow = Math.floor(containerWidth / (minWidth + gap));
+    perRow = Math.max(1, Math.min(perRow, count));
 
-    let cols = Math.max(1, Math.min(maxCols, Math.floor(containerWidth / targetMin)));
-    cols = Math.min(cols, count);
-
-    // Avoid 1-card remainder by stepping down until remainder != 1 or cols == 1
-    while (cols > 1 && count % cols === 1) {
-        cols -= 1;
+    // Avoid single orphan: if count % perRow === 1, reduce perRow
+    while (perRow > 1 && count % perRow === 1) {
+        perRow -= 1;
     }
 
-    // Safety: ensure width fit
-    while (cols > 1 && containerWidth / cols < targetMin - 1) {
-        cols -= 1;
-    }
+    // Calculate flex-basis to fit perRow items
+    const flexBasis = `calc(${100 / perRow}% - ${gap}px)`;
 
-    grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    items.forEach(item => {
+        item.style.flexBasis = flexBasis;
+    });
 }
 
 // Lightweight debounce helper
