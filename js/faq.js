@@ -51,6 +51,9 @@ async function loadFAQ() {
                 </div>
             `;
         }).join('');
+
+        adjustFaqGridColumns();
+        window.addEventListener('resize', debounce(adjustFaqGridColumns, 150));
     } catch (err) {
         console.error('Error loading FAQ:', err);
     }
@@ -95,6 +98,45 @@ function initFAQToggle() {
             openFAQLightbox(i, faqSrcs);
         });
     });
+}
+
+// Keep bottom row from having a single orphan card by adjusting column count dynamically
+function adjustFaqGridColumns() {
+    const grid = document.getElementById('faq-cards');
+    if (!grid) return;
+    const cards = grid.querySelectorAll('.faq-card');
+    const count = cards.length;
+    if (count === 0) return;
+
+    const containerWidth = grid.clientWidth;
+    const targetMin = 260; // align with CSS min width
+    const maxCols = Math.min(5, count); // cap to 5
+
+    let cols = Math.max(1, Math.min(maxCols, Math.floor(containerWidth / targetMin)));
+    cols = Math.min(cols, count);
+
+    // Avoid 1-card remainder by stepping down until remainder != 1 or cols == 1
+    while (cols > 1 && count % cols === 1) {
+        cols -= 1;
+    }
+
+    // Safety: ensure width fit
+    while (cols > 1 && containerWidth / cols < targetMin - 1) {
+        cols -= 1;
+    }
+
+    grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+
+    grid.style.gridTemplateColumns = `repeat(${chosen}, minmax(0, 1fr))`;
+}
+
+// Lightweight debounce helper
+function debounce(fn, delay) {
+    let t;
+    return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), delay);
+    };
 }
 
 function openFAQLightbox(index, sources) {
