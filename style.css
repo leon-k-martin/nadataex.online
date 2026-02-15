@@ -352,6 +352,7 @@ h2 {
     display: block;
     width: 100%;
     height: 50px;
+    overflow: visible;
 }
 
 /* ===== HERO SECTION ===== */
@@ -1289,33 +1290,9 @@ footer {
     }
 }
 
-/* ===== REVIEW TICKER (fixed bottom) ===== */
+/* ===== REVIEW TICKER (hidden — replaced by floating testimonials) ===== */
 .review-ticker {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 900;
-    background: linear-gradient(rgba(74, 144, 217, 0.9), rgba(74, 144, 217, 0.9)),
-        url('static/img/textures/plane_weiss.jpg') center/cover;
-    color: var(--cream);
-    overflow: hidden;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    border-top: 2px dashed var(--water-blue);
-    transition: background 0.4s ease;
-}
-
-.review-ticker::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'%3E%3Cpath d='M0,4 Q15,0 30,4 Q45,8 60,4 Q75,0 90,4 Q105,8 120,4' fill='none' stroke='rgba(8,24,168,0.9)' stroke-width='8'/%3E%3C/svg%3E") repeat-x;
-    background-size: 120px 8px;
+    display: none !important;
 }
 
 .ticker-track {
