@@ -16,7 +16,7 @@
       <input type="password" id="token-input" placeholder="Passwort eingeben">
       <button id="login-btn">Anmelden</button>
       <p id="login-error" class="error hidden"></p>
-      <p class="login-hint">Passwort vergessen? Frag bei Leon nach.</p>
+      <p class="login-hint">Passwort vergessen? Frag bei L nach.</p>
     </div>
   </div>
 
@@ -64,24 +64,29 @@
 
     <!-- FAQ tab -->
     <div id="tab-faq" class="tab-panel hidden">
-      <h2>FAQ bearbeiten</h2>
-      <p class="tab-desc">Jede Frage beginnt mit <code>## Überschrift</code>. Der Text darunter ist die Antwort. Für EN/DE: Englisch oben, <code>---</code>, Deutsch unten.</p>
-      <div class="editor-panel">
-        <div class="editor-actions">
-          <button id="save-faq-btn" class="btn-primary">💾 Speichern</button>
-        </div>
-        <textarea id="faq-editor" rows="20" placeholder="Laden..."></textarea>
-        <p id="faq-status" class="status hidden"></p>
-      </div>
-      <h3 style="margin-top:2rem">FAQ-Bilder</h3>
-      <p class="tab-desc">Bilder in <code>static/img/faq/</code>. Neue Bilder als PNG hochladen.</p>
-      <div id="faq-images" class="image-grid"></div>
+      <h2>FAQ-Bilder bearbeiten</h2>
+      <p class="tab-desc">Die FAQ werden als Bilder angezeigt (PNG). Es gibt je einen Satz für Englisch und Deutsch.</p>
+
+      <h3>🇬🇧 Englisch</h3>
+      <p class="tab-desc">Bilder in <code>static/img/faq/</code></p>
+      <div id="faq-images-en" class="image-grid"></div>
       <div class="upload-area">
         <label class="btn-primary upload-btn">
-          📷 Bild hochladen
-          <input type="file" id="faq-image-upload" accept="image/png,image/jpeg,image/webp" hidden>
+          📷 EN-Bild hochladen
+          <input type="file" id="faq-upload-en" accept="image/png" hidden>
         </label>
-        <p id="faq-upload-status" class="status hidden"></p>
+        <p id="faq-upload-en-status" class="status hidden"></p>
+      </div>
+
+      <h3 style="margin-top:2rem">🇩🇪 Deutsch</h3>
+      <p class="tab-desc">Bilder in <code>faq/de/</code></p>
+      <div id="faq-images-de" class="image-grid"></div>
+      <div class="upload-area">
+        <label class="btn-primary upload-btn">
+          📷 DE-Bild hochladen
+          <input type="file" id="faq-upload-de" accept="image/png" hidden>
+        </label>
+        <p id="faq-upload-de-status" class="status hidden"></p>
       </div>
     </div>
 
@@ -117,7 +122,7 @@
       </div>
 
       <h3 style="margin-top:2rem">Copyright-Zuordnung</h3>
-      <p class="tab-desc">Welcher Fotograf hat welche Bilder gemacht.</p>
+      <p class="tab-desc">Welche:r Fotograf:in hat welche Bilder gemacht.</p>
       <div id="copyright-list"></div>
       <div id="copyright-form" class="hidden">
         <h3 id="copyright-form-title">Neue Zuordnung</h3>

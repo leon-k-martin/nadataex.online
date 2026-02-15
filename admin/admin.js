@@ -10,7 +10,6 @@ let token = '';
 
 // Tracked file state (sha needed for updates)
 let aboutFile   = null;   // { sha, content }
-let faqFile     = null;   // { sha, content }
 let reviewsFile = null;   // { sha, content (parsed array) }
 let copyrightsFile = null; // { sha, content (parsed array) }
 let manifestFile   = null; // { sha, content (parsed array) }
@@ -46,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('save-about-btn').addEventListener('click', saveAbout);
 
   // FAQ
-  document.getElementById('save-faq-btn').addEventListener('click', saveFaq);
-  document.getElementById('faq-image-upload').addEventListener('change', uploadFaqImage);
+  document.getElementById('faq-upload-en').addEventListener('change', e => uploadFaqImage(e, 'static/img/faq', 'faq-upload-en-status', 'faq-images-en'));
+  document.getElementById('faq-upload-de').addEventListener('change', e => uploadFaqImage(e, 'faq/de', 'faq-upload-de-status', 'faq-images-de'));
 
   // Reviews
   document.getElementById('add-review-btn').addEventListener('click', () => openReviewForm(null));
@@ -156,8 +155,8 @@ function switchTab(tabName) {
 /* ── Load all data ─────────────────────────── */
 async function loadAll() {
   loadAbout();
-  loadFaq();
-  loadFaqImages();
+  loadFaqImages('static/img/faq', 'faq-images-en');
+  loadFaqImages('faq/de', 'faq-images-de');
   loadReviews();
   loadDesignImages();
   loadCopyrights();
@@ -189,42 +188,19 @@ async function saveAbout() {
   }
 }
 
-/* ── FAQ ───────────────────────────────────── */
-async function loadFaq() {
-  const editor = document.getElementById('faq-editor');
-  editor.value = 'Laden...';
-  try {
-    faqFile = await getFile('content/faq.md');
-    editor.value = faqFile.content;
-  } catch (e) {
-    editor.value = '';
-    showStatus('faq-status', `❌ ${e.message}`, 'error');
-  }
-}
-
-async function saveFaq() {
-  if (!faqFile) return;
-  const content = document.getElementById('faq-editor').value;
-  try {
-    const result = await putFile('content/faq.md', content, faqFile.sha, 'Update FAQ');
-    faqFile.sha = result.content.sha;
-    faqFile.content = content;
-    showStatus('faq-status', '✅ Gespeichert!', 'success');
-  } catch (e) {
-    showStatus('faq-status', `❌ ${e.message}`, 'error');
-  }
-}
-
-/* ── FAQ Images ────────────────────────────── */
-async function loadFaqImages() {
-  const grid = document.getElementById('faq-images');
+/* ── FAQ Images (EN + DE) ──────────────────── */
+async function loadFaqImages(folder, gridId) {
+  const grid = document.getElementById(gridId);
   grid.innerHTML = '<p>Laden...</p>';
   try {
-    const res = await ghFetch(`/contents/static/img/faq?ref=${BRANCH}`);
+    const res = await ghFetch(`/contents/${folder}?ref=${BRANCH}`);
     if (!res.ok) { grid.innerHTML = '<p>Keine Bilder gefunden.</p>'; return; }
     const files = await res.json();
     const images = files.filter(f => /\.(png|jpe?g|webp|gif)$/i.test(f.name));
     if (images.length === 0) { grid.innerHTML = '<p>Keine Bilder.</p>'; return; }
+
+    // Sort by filename
+    images.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 
     grid.innerHTML = images.map(img => `
       <div class="image-card" data-path="${img.path}" data-sha="${img.sha}">
@@ -237,9 +213,10 @@ async function loadFaqImages() {
     grid.querySelectorAll('.image-delete').forEach(btn => {
       btn.addEventListener('click', async () => {
         const card = btn.closest('.image-card');
-        if (!confirm(`"${card.querySelector('.image-name').textContent}" wirklich löschen?`)) return;
+        const name = card.querySelector('.image-name').textContent;
+        if (!confirm(`"${name}" wirklich löschen?`)) return;
         try {
-          await deleteFile(card.dataset.path, card.dataset.sha, `Delete FAQ image ${card.querySelector('.image-name').textContent}`);
+          await deleteFile(card.dataset.path, card.dataset.sha, `Delete FAQ image ${name}`);
           card.remove();
         } catch (e) {
           alert(`Fehler: ${e.message}`);
@@ -251,19 +228,18 @@ async function loadFaqImages() {
   }
 }
 
-async function uploadFaqImage(e) {
+async function uploadFaqImage(e, folder, statusId, gridId) {
   const file = e.target.files[0];
   if (!file) return;
-  const statusId = 'faq-upload-status';
   showStatus(statusId, '⏳ Hochladen...', 'success');
 
   try {
     const base64 = await readFileAsBase64(file);
-    const path = `static/img/faq/${file.name}`;
+    const path = `${folder}/${file.name}`;
     await putBinaryFile(path, base64, null, `Add FAQ image ${file.name}`);
     showStatus(statusId, '✅ Hochgeladen!', 'success');
     e.target.value = '';
-    loadFaqImages();
+    loadFaqImages(folder, gridId);
   } catch (err) {
     showStatus(statusId, `❌ ${err.message}`, 'error');
   }
