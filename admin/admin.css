@@ -293,7 +293,7 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
   object-fit: contain;
 }
 
-.upload-area { margin: 1rem 0; }
+.upload-area { margin: 0; }
 
 .upload-btn {
   display: inline-block;
@@ -337,6 +337,99 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
   display: flex;
   gap: 0.5rem;
   flex-shrink: 0;
+}
+
+/* ── Designs toolbar ────────────────────────── */
+.designs-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.add-group-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.add-group-row input {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: 160px;
+}
+
+/* ── Design groups ─────────────────────────── */
+.design-group {
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--gray);
+  border-bottom: 1px solid var(--border);
+}
+
+.group-header h3 {
+  font-size: 0.95rem;
+  color: var(--deep-blue);
+  margin: 0;
+}
+
+.group-count {
+  font-weight: normal;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.group-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.group-dropzone {
+  min-height: 80px;
+  padding: 0.75rem;
+  transition: background 0.2s;
+}
+
+.group-dropzone.drag-over {
+  background: rgba(74, 144, 217, 0.1);
+  outline: 2px dashed var(--water-blue);
+  outline-offset: -4px;
+}
+
+.drop-hint {
+  color: #ccc;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1.5rem;
+  pointer-events: none;
+}
+
+/* Drag styles */
+.design-card[draggable] {
+  cursor: grab;
+}
+
+.design-card[draggable]:active {
+  cursor: grabbing;
+}
+
+.design-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
 }
 
 /* ── Copyright on design cards ─────────────── */

@@ -13,6 +13,7 @@ let aboutFile   = null;   // { sha, content }
 let reviewsFile = null;   // { sha, content (parsed array) }
 let copyrightsFile = null; // { sha, content (parsed array) }
 let manifestFile   = null; // { sha, content (parsed array) }
+let groupsFile     = null; // { sha, content (parsed array of { name, images }) }
 
 let editingReviewIdx = null;  // index or null for new
 
@@ -57,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('add-photographer-btn').addEventListener('click', addPhotographer);
   document.getElementById('new-photographer-name').addEventListener('keydown', e => {
     if (e.key === 'Enter') addPhotographer();
+  });
+  document.getElementById('add-group-btn').addEventListener('click', addGroup);
+  document.getElementById('new-group-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addGroup();
   });
 });
 
@@ -158,8 +163,8 @@ async function loadAll() {
   loadFaqImages('static/img/faq', 'faq-images-en');
   loadFaqImages('faq/de', 'faq-images-de');
   loadReviews();
-  // Load copyrights first, then designs (grid needs photographer list)
-  loadCopyrights().then(() => loadDesignImages());
+  // Load copyrights + groups first, then designs (grid needs both)
+  Promise.all([loadCopyrights(), loadGroups()]).then(() => loadDesignImages());
 }
 
 /* ── ABOUT ─────────────────────────────────── */
@@ -350,28 +355,79 @@ async function deleteReview(idx) {
   }
 }
 
+/* ── DESIGNS — Groups ──────────────────────── */
+async function loadGroups() {
+  try {
+    const file = await getFile('static/img/products/groups.json');
+    groupsFile = { sha: file.sha, content: JSON.parse(file.content) };
+  } catch (e) {
+    // File doesn't exist yet — start with empty groups
+    groupsFile = { sha: null, content: [] };
+  }
+}
+
+async function saveGroupsData() {
+  try {
+    const json = JSON.stringify(groupsFile.content, null, 2) + '\n';
+    const result = await putFile('static/img/products/groups.json', json, groupsFile.sha, 'Update groups');
+    groupsFile.sha = result.content.sha;
+  } catch (e) {
+    alert(`Fehler beim Speichern der Gruppen: ${e.message}`);
+  }
+}
+
+function addGroup() {
+  const input = document.getElementById('new-group-name');
+  const name = input.value.trim();
+  if (!name) return;
+  if (groupsFile.content.some(g => g.name === name)) {
+    showStatus('design-upload-status', 'Gruppe existiert bereits', 'error');
+    return;
+  }
+  groupsFile.content.push({ name, images: [] });
+  saveGroupsData();
+  input.value = '';
+  renderDesignGrid();
+}
+
+function renameGroup(oldName) {
+  const newName = prompt('Neuer Gruppenname:', oldName);
+  if (!newName || newName === oldName) return;
+  if (groupsFile.content.some(g => g.name === newName)) {
+    alert('Name existiert bereits');
+    return;
+  }
+  const group = groupsFile.content.find(g => g.name === oldName);
+  if (group) group.name = newName;
+  saveGroupsData();
+  renderDesignGrid();
+}
+
+function deleteGroup(name) {
+  if (!confirm(`Gruppe "${name}" löschen? Die Fotos werden in "Ohne Gruppe" verschoben.`)) return;
+  groupsFile.content = groupsFile.content.filter(g => g.name !== name);
+  saveGroupsData();
+  renderDesignGrid();
+}
+
 /* ── DESIGNS — Images ──────────────────────── */
 async function loadDesignImages() {
-  const grid = document.getElementById('designs-grid');
-  grid.innerHTML = '<p>Laden...</p>';
+  const container = document.getElementById('designs-groups-container');
+  container.innerHTML = '<p>Laden...</p>';
   try {
     const file = await getFile('static/img/products/manifest.json');
     manifestFile = { sha: file.sha, content: JSON.parse(file.content) };
     renderDesignGrid();
   } catch (e) {
-    grid.innerHTML = `<p class="error">${e.message}</p>`;
+    container.innerHTML = `<p class="error">${e.message}</p>`;
   }
 }
 
 function renderDesignGrid() {
-  const grid = document.getElementById('designs-grid');
-  const images = manifestFile.content;
-  if (images.length === 0) {
-    grid.innerHTML = '<p>Keine Design-Fotos.</p>';
-    return;
-  }
+  const container = document.getElementById('designs-groups-container');
+  const allImages = manifestFile.content;
 
-  // Build a lookup: filename stem → photographer
+  // Build copyright lookup
   const stemToPhotographer = {};
   if (copyrightsFile) {
     for (const entry of copyrightsFile.content) {
@@ -380,38 +436,46 @@ function renderDesignGrid() {
       }
     }
   }
-
-  // Get list of photographer names for the dropdown
   const photographers = copyrightsFile ? copyrightsFile.content.map(c => c.photographer) : [];
 
-  grid.innerHTML = images.map(name => {
-    const stem = name.replace(/\.[^.]+$/, '');
-    const assigned = stemToPhotographer[stem] || '';
-    const options = ['<option value="">—</option>']
-      .concat(photographers.map(p =>
-        `<option value="${escapeHtml(p)}"${p === assigned ? ' selected' : ''}>${escapeHtml(p)}</option>`
-      )).join('');
+  // Determine which images are in groups
+  const groupedImages = new Set();
+  for (const g of groupsFile.content) {
+    for (const img of g.images) groupedImages.add(img);
+  }
+  const ungrouped = allImages.filter(img => !groupedImages.has(img));
 
-    return `
-      <div class="image-card design-card" data-name="${name}" data-stem="${stem}">
-        <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
-        <span class="image-name">${name}</span>
-        <select class="copyright-select" title="Fotograf:in">${options}</select>
-        <button class="image-delete" title="Löschen">×</button>
-      </div>`;
-  }).join('');
+  // Render each group + ungrouped
+  let html = '';
 
-  // Copyright dropdown change
-  grid.querySelectorAll('.copyright-select').forEach(sel => {
-    sel.addEventListener('change', () => {
-      scheduleCopyrightSave();
-    });
+  for (const group of groupsFile.content) {
+    // Only show images that are still in the manifest
+    const validImages = group.images.filter(img => allImages.includes(img));
+    html += renderGroupSection(group.name, validImages, stemToPhotographer, photographers, false);
+  }
+
+  // Ungrouped section
+  html += renderGroupSection('Ohne Gruppe', ungrouped, stemToPhotographer, photographers, true);
+
+  container.innerHTML = html;
+
+  // Wire up group actions
+  container.querySelectorAll('.group-rename-btn').forEach(btn => {
+    btn.addEventListener('click', () => renameGroup(btn.dataset.group));
+  });
+  container.querySelectorAll('.group-delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => deleteGroup(btn.dataset.group));
   });
 
-  // Delete button
-  grid.querySelectorAll('.image-delete').forEach(btn => {
+  // Wire up copyright dropdowns
+  container.querySelectorAll('.copyright-select').forEach(sel => {
+    sel.addEventListener('change', () => scheduleCopyrightSave());
+  });
+
+  // Wire up delete buttons
+  container.querySelectorAll('.image-delete').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const card = btn.closest('.image-card');
+      const card = btn.closest('.design-card');
       const name = card.dataset.name;
       if (!confirm(`"${name}" wirklich löschen?`)) return;
       try {
@@ -421,12 +485,117 @@ function renderDesignGrid() {
         const json = JSON.stringify(manifestFile.content, null, 2) + '\n';
         const result = await putFile('static/img/products/manifest.json', json, manifestFile.sha, 'Update manifest');
         manifestFile.sha = result.content.sha;
-        // Also remove from copyrights
+        // Remove from groups
+        for (const g of groupsFile.content) {
+          g.images = g.images.filter(n => n !== name);
+        }
+        saveGroupsData();
         removeStemFromCopyrights(name.replace(/\.[^.]+$/, ''));
         card.remove();
       } catch (e) {
         alert(`Fehler: ${e.message}`);
       }
+    });
+  });
+
+  // Wire up drag & drop
+  initDragAndDrop();
+}
+
+function renderGroupSection(groupName, images, stemToPhotographer, photographers, isUngrouped) {
+  const groupId = isUngrouped ? '__ungrouped' : groupName;
+  const headerActions = isUngrouped ? '' : `
+    <button class="btn-small group-rename-btn" data-group="${escapeHtml(groupName)}" title="Umbenennen">✏️</button>
+    <button class="btn-small group-delete-btn" data-group="${escapeHtml(groupName)}" title="Löschen">🗑️</button>
+  `;
+
+  const cards = images.map(name => {
+    const stem = name.replace(/\.[^.]+$/, '');
+    const assigned = stemToPhotographer[stem] || '';
+    const options = ['<option value="">—</option>']
+      .concat(photographers.map(p =>
+        `<option value="${escapeHtml(p)}"${p === assigned ? ' selected' : ''}>${escapeHtml(p)}</option>`
+      )).join('');
+
+    return `
+      <div class="image-card design-card" data-name="${name}" data-stem="${stem}" draggable="true">
+        <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
+        <span class="image-name">${name}</span>
+        <select class="copyright-select" title="Fotograf:in">${options}</select>
+        <button class="image-delete" title="Löschen">×</button>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="design-group" data-group="${escapeHtml(groupId)}">
+      <div class="group-header">
+        <h3>${escapeHtml(groupName)} <span class="group-count">(${images.length})</span></h3>
+        <div class="group-actions">${headerActions}</div>
+      </div>
+      <div class="group-dropzone image-grid" data-group="${escapeHtml(groupId)}">
+        ${cards || '<p class="drop-hint">Bilder hierher ziehen</p>'}
+      </div>
+    </div>`;
+}
+
+/* ── Drag & Drop ───────────────────────────── */
+let draggedCard = null;
+
+function initDragAndDrop() {
+  const container = document.getElementById('designs-groups-container');
+
+  // Drag start
+  container.querySelectorAll('.design-card[draggable]').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      draggedCard = card;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', card.dataset.name);
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      draggedCard = null;
+      // Remove all drag-over highlights
+      container.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+    });
+  });
+
+  // Drop zones
+  container.querySelectorAll('.group-dropzone').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', e => {
+      // Only remove if leaving the zone itself
+      if (!zone.contains(e.relatedTarget)) {
+        zone.classList.remove('drag-over');
+      }
+    });
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      if (!draggedCard) return;
+
+      const imageName = draggedCard.dataset.name;
+      const targetGroup = zone.dataset.group;
+
+      // Remove from old group
+      for (const g of groupsFile.content) {
+        g.images = g.images.filter(n => n !== imageName);
+      }
+
+      // Add to new group (unless ungrouped)
+      if (targetGroup !== '__ungrouped') {
+        const group = groupsFile.content.find(g => g.name === targetGroup);
+        if (group && !group.images.includes(imageName)) {
+          group.images.push(imageName);
+        }
+      }
+
+      saveGroupsData();
+      renderDesignGrid();
     });
   });
 }
@@ -525,7 +694,7 @@ function scheduleCopyrightSave() {
 
 async function saveCopyrightFromGrid() {
   // Rebuild copyrights.json from the dropdowns
-  const cards = document.querySelectorAll('#designs-grid .design-card');
+  const cards = document.querySelectorAll('#designs-groups-container .design-card');
   const photographerMap = {}; // photographer → [stems]
 
   cards.forEach(card => {

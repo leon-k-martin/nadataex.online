@@ -111,15 +111,23 @@
     <!-- Designs tab -->
     <div id="tab-designs" class="tab-panel hidden">
       <h2>Design-Fotos</h2>
-      <p class="tab-desc">Fotos für die Galerie. Klick auf das © um eine:n Fotograf:in zuzuordnen.</p>
-      <div id="designs-grid" class="image-grid"></div>
-      <div class="upload-area">
-        <label class="btn-primary upload-btn">
-          📷 Foto hochladen
-          <input type="file" id="design-image-upload" accept="image/jpeg,image/png,image/webp" hidden>
-        </label>
-        <p id="design-upload-status" class="status hidden"></p>
+      <p class="tab-desc">Fotos in Gruppen organisieren. Bilder per Drag & Drop zwischen Gruppen verschieben.</p>
+
+      <div class="designs-toolbar">
+        <div class="add-group-row">
+          <input type="text" id="new-group-name" placeholder="Neue Gruppe...">
+          <button id="add-group-btn" class="btn-primary">+ Gruppe</button>
+        </div>
+        <div class="upload-area">
+          <label class="btn-primary upload-btn">
+            📷 Foto hochladen
+            <input type="file" id="design-image-upload" accept="image/jpeg,image/png,image/webp" hidden>
+          </label>
+        </div>
       </div>
+      <p id="design-upload-status" class="status hidden"></p>
+
+      <div id="designs-groups-container"></div>
 
       <h3 style="margin-top:2rem">Fotograf:innen verwalten</h3>
       <p class="tab-desc">Namen die in der Auswahl erscheinen.</p>
