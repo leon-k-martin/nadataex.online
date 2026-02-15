@@ -17,6 +17,9 @@ async function loadReviews() {
     let lastIndex = -1;
     let lastDivider = -1;
 
+    // Track which dividers currently have an active testimonial
+    const busyDividers = new Set();
+
     // Track visible dividers
     const visibleDividers = new Set();
     const observer = new IntersectionObserver((entries) => {
@@ -29,9 +32,12 @@ async function loadReviews() {
 
     function showTestimonial(divider) {
         const svg = divider.querySelector('svg');
-        if (!svg) return;
+        if (!svg) return Promise.resolve();
         const originalPath = svg.querySelector('path');
-        if (!originalPath) return;
+        if (!originalPath) return Promise.resolve();
+
+        // Mark this divider as busy
+        busyDividers.add(divider);
 
         // Pick review (avoid repeat)
         let idx;
@@ -108,40 +114,46 @@ async function loadReviews() {
         const duration = Math.max(10000, w * 30); // scale duration to width
         const startTime = performance.now();
 
-        function animate(now) {
-            const elapsed = now - startTime;
-            const t = Math.min(elapsed / duration, 1);
+        return new Promise((resolve) => {
+            function animate(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
 
-            const offset = 100 - t * 200;
-            tp.setAttribute('startOffset', offset + '%');
+                const offset = 100 - t * 200;
+                tp.setAttribute('startOffset', offset + '%');
 
-            let opacity = 0.85;
-            if (t < 0.06) opacity = (t / 0.06) * 0.85;
-            else if (t > 0.88) opacity = ((1 - t) / 0.12) * 0.85;
-            textEl.setAttribute('opacity', opacity);
+                let opacity = 0.85;
+                if (t < 0.06) opacity = (t / 0.06) * 0.85;
+                else if (t > 0.88) opacity = ((1 - t) / 0.12) * 0.85;
+                textEl.setAttribute('opacity', opacity);
 
-            if (t < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                overlaySvg.remove();
+                if (t < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    overlaySvg.remove();
+                    busyDividers.delete(divider);
+                    resolve();
+                }
             }
-        }
 
-        requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
+        });
     }
 
     // Schedule recurring testimonials
     function scheduleNext() {
         const delay = 4000 + Math.random() * 4000;
-        setTimeout(() => {
+        setTimeout(async () => {
             if (visibleDividers.size > 0) {
-                // Pick a visible divider (avoid repeat)
-                const visible = Array.from(visibleDividers);
-                let pick;
-                do { pick = visible[Math.floor(Math.random() * visible.length)]; }
-                while (pick === dividers[lastDivider] && visible.length > 1);
-                lastDivider = dividers.indexOf(pick);
-                showTestimonial(pick);
+                // Only pick dividers that are visible AND not already showing a testimonial
+                const available = Array.from(visibleDividers).filter(d => !busyDividers.has(d));
+                if (available.length > 0) {
+                    let pick;
+                    do { pick = available[Math.floor(Math.random() * available.length)]; }
+                    while (pick === dividers[lastDivider] && available.length > 1);
+                    lastDivider = dividers.indexOf(pick);
+                    showTestimonial(pick);
+                }
             }
             scheduleNext();
         }, delay);

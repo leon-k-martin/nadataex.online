@@ -728,7 +728,12 @@ h2 {
     }
 
     .faq-tile {
-        max-height: 60vh;
+        max-height: 80vh;
+    }
+
+    .faq-images {
+        gap: 20px;
+        padding: 10px 10px;
     }
 }
 
@@ -992,7 +997,7 @@ h2 {
 .faq-tile {
     flex: 0 1 calc(33.33% - 16px);
     max-height: 35vh;
-    min-width: 180px;
+    min-width: 150px;
     max-width: 100%;
     width: auto;
     height: auto;
