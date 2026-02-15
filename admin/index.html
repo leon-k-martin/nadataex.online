@@ -111,7 +111,7 @@
     <!-- Designs tab -->
     <div id="tab-designs" class="tab-panel hidden">
       <h2>Design-Fotos</h2>
-      <p class="tab-desc">Fotos für die Galerie. Werden automatisch als WebP konvertiert angezeigt.</p>
+      <p class="tab-desc">Fotos für die Galerie. Klick auf das © um eine:n Fotograf:in zuzuordnen.</p>
       <div id="designs-grid" class="image-grid"></div>
       <div class="upload-area">
         <label class="btn-primary upload-btn">
@@ -121,22 +121,14 @@
         <p id="design-upload-status" class="status hidden"></p>
       </div>
 
-      <h3 style="margin-top:2rem">Copyright-Zuordnung</h3>
-      <p class="tab-desc">Welche:r Fotograf:in hat welche Bilder gemacht.</p>
-      <div id="copyright-list"></div>
-      <div id="copyright-form" class="hidden">
-        <h3 id="copyright-form-title">Neue Zuordnung</h3>
-        <label>Fotograf*in <input type="text" id="copyright-photographer" placeholder="z.B. Lauryn Zoe Hinsch"></label>
-        <label>Dateinamen (ohne Endung, komma-getrennt)
-          <textarea id="copyright-files" rows="3" placeholder="z.B. DSC03345, posten, nadataex033"></textarea>
-        </label>
-        <div class="form-actions">
-          <button id="save-copyright-btn" class="btn-primary">💾 Speichern</button>
-          <button id="cancel-copyright-btn" class="btn-small">Abbrechen</button>
-        </div>
-        <p id="copyright-status" class="status hidden"></p>
+      <h3 style="margin-top:2rem">Fotograf:innen verwalten</h3>
+      <p class="tab-desc">Namen die in der Auswahl erscheinen.</p>
+      <div id="photographer-list" class="photographer-pills"></div>
+      <div class="add-photographer-row">
+        <input type="text" id="new-photographer-name" placeholder="Neuer Name...">
+        <button id="add-photographer-btn" class="btn-primary">+ Hinzufügen</button>
       </div>
-      <button id="add-copyright-btn" class="btn-primary" style="margin-top:1rem">+ Fotograf hinzufügen</button>
+      <p id="copyright-status" class="status hidden"></p>
     </div>
 
   </div>

@@ -15,7 +15,6 @@ let copyrightsFile = null; // { sha, content (parsed array) }
 let manifestFile   = null; // { sha, content (parsed array) }
 
 let editingReviewIdx = null;  // index or null for new
-let editingCopyIdx   = null;  // index or null for new
 
 /* ── Init ──────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,9 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Designs
   document.getElementById('design-image-upload').addEventListener('change', uploadDesignImage);
-  document.getElementById('add-copyright-btn').addEventListener('click', () => openCopyrightForm(null));
-  document.getElementById('save-copyright-btn').addEventListener('click', saveCopyright);
-  document.getElementById('cancel-copyright-btn').addEventListener('click', closeCopyrightForm);
+  document.getElementById('add-photographer-btn').addEventListener('click', addPhotographer);
+  document.getElementById('new-photographer-name').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addPhotographer();
+  });
 });
 
 /* ── Auth ──────────────────────────────────── */
@@ -158,8 +158,8 @@ async function loadAll() {
   loadFaqImages('static/img/faq', 'faq-images-en');
   loadFaqImages('faq/de', 'faq-images-de');
   loadReviews();
-  loadDesignImages();
-  loadCopyrights();
+  // Load copyrights first, then designs (grid needs photographer list)
+  loadCopyrights().then(() => loadDesignImages());
 }
 
 /* ── ABOUT ─────────────────────────────────── */
@@ -371,28 +371,58 @@ function renderDesignGrid() {
     return;
   }
 
-  grid.innerHTML = images.map(name => `
-    <div class="image-card" data-name="${name}">
-      <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
-      <span class="image-name">${name}</span>
-      <button class="image-delete" title="Löschen">×</button>
-    </div>
-  `).join('');
+  // Build a lookup: filename stem → photographer
+  const stemToPhotographer = {};
+  if (copyrightsFile) {
+    for (const entry of copyrightsFile.content) {
+      for (const stem of entry.files) {
+        stemToPhotographer[stem] = entry.photographer;
+      }
+    }
+  }
 
+  // Get list of photographer names for the dropdown
+  const photographers = copyrightsFile ? copyrightsFile.content.map(c => c.photographer) : [];
+
+  grid.innerHTML = images.map(name => {
+    const stem = name.replace(/\.[^.]+$/, '');
+    const assigned = stemToPhotographer[stem] || '';
+    const options = ['<option value="">—</option>']
+      .concat(photographers.map(p =>
+        `<option value="${escapeHtml(p)}"${p === assigned ? ' selected' : ''}>${escapeHtml(p)}</option>`
+      )).join('');
+
+    return `
+      <div class="image-card design-card" data-name="${name}" data-stem="${stem}">
+        <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
+        <span class="image-name">${name}</span>
+        <select class="copyright-select" title="Fotograf:in">${options}</select>
+        <button class="image-delete" title="Löschen">×</button>
+      </div>`;
+  }).join('');
+
+  // Copyright dropdown change
+  grid.querySelectorAll('.copyright-select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      scheduleCopyrightSave();
+    });
+  });
+
+  // Delete button
   grid.querySelectorAll('.image-delete').forEach(btn => {
     btn.addEventListener('click', async () => {
       const card = btn.closest('.image-card');
       const name = card.dataset.name;
       if (!confirm(`"${name}" wirklich löschen?`)) return;
       try {
-        // Get the file SHA first
         const fileData = await getFile(`static/img/products/webp/${name}`);
         await deleteFile(`static/img/products/webp/${name}`, fileData.sha, `Delete design photo ${name}`);
-        // Remove from manifest
         manifestFile.content = manifestFile.content.filter(n => n !== name);
         const json = JSON.stringify(manifestFile.content, null, 2) + '\n';
         const result = await putFile('static/img/products/manifest.json', json, manifestFile.sha, 'Update manifest');
         manifestFile.sha = result.content.sha;
+        // Also remove from copyrights
+        removeStemFromCopyrights(name.replace(/\.[^.]+$/, ''));
         card.remove();
       } catch (e) {
         alert(`Fehler: ${e.message}`);
@@ -429,121 +459,110 @@ async function uploadDesignImage(e) {
   }
 }
 
-/* ── DESIGNS — Copyrights ──────────────────── */
+/* ── DESIGNS — Copyrights (visual) ─────────── */
 async function loadCopyrights() {
-  const list = document.getElementById('copyright-list');
-  list.innerHTML = '<p>Laden...</p>';
   try {
     const file = await getFile('content/copyrights.json');
     copyrightsFile = { sha: file.sha, content: JSON.parse(file.content) };
-    renderCopyrights();
+    renderPhotographerPills();
   } catch (e) {
-    list.innerHTML = `<p class="error">${e.message}</p>`;
+    console.error('Copyright load error:', e);
+    copyrightsFile = { sha: null, content: [] };
   }
 }
 
-function renderCopyrights() {
-  const list = document.getElementById('copyright-list');
-  const data = copyrightsFile.content;
-  if (data.length === 0) {
-    list.innerHTML = '<p>Keine Copyright-Zuordnungen.</p>';
+function renderPhotographerPills() {
+  const list = document.getElementById('photographer-list');
+  const photographers = copyrightsFile.content.map(c => c.photographer);
+  if (photographers.length === 0) {
+    list.innerHTML = '<p style="color:#888">Noch keine Fotograf:innen.</p>';
     return;
   }
-
-  list.innerHTML = data.map((c, i) => `
-    <div class="copyright-card" data-idx="${i}">
-      <div>
-        <strong>📷 ${escapeHtml(c.photographer)}</strong>
-        <div class="copyright-files">${c.files.join(', ')}</div>
-      </div>
-      <div class="review-card-actions">
-        <button class="btn-small edit-copy-btn">✏️</button>
-        <button class="btn-danger delete-copy-btn">🗑️</button>
-      </div>
-    </div>
+  list.innerHTML = photographers.map(name => `
+    <span class="photographer-pill">
+      ${escapeHtml(name)}
+      <button class="pill-remove" data-name="${escapeHtml(name)}" title="Entfernen">×</button>
+    </span>
   `).join('');
 
-  list.querySelectorAll('.edit-copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = +btn.closest('.copyright-card').dataset.idx;
-      openCopyrightForm(idx);
-    });
-  });
-  list.querySelectorAll('.delete-copy-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = +btn.closest('.copyright-card').dataset.idx;
-      if (confirm('Zuordnung wirklich löschen?')) deleteCopyright(idx);
-    });
+  list.querySelectorAll('.pill-remove').forEach(btn => {
+    btn.addEventListener('click', () => removePhotographer(btn.dataset.name));
   });
 }
 
-function openCopyrightForm(idx) {
-  editingCopyIdx = idx;
-  const form = document.getElementById('copyright-form');
-  const title = document.getElementById('copyright-form-title');
-  document.getElementById('copyright-status').classList.add('hidden');
-  form.classList.remove('hidden');
+async function addPhotographer() {
+  const input = document.getElementById('new-photographer-name');
+  const name = input.value.trim();
+  if (!name) return;
 
-  if (idx !== null) {
-    const c = copyrightsFile.content[idx];
-    title.textContent = 'Zuordnung bearbeiten';
-    document.getElementById('copyright-photographer').value = c.photographer;
-    document.getElementById('copyright-files').value = c.files.join(', ');
-  } else {
-    title.textContent = 'Neue Zuordnung';
-    document.getElementById('copyright-photographer').value = '';
-    document.getElementById('copyright-files').value = '';
-  }
-}
-
-function closeCopyrightForm() {
-  document.getElementById('copyright-form').classList.add('hidden');
-  editingCopyIdx = null;
-}
-
-async function saveCopyright() {
-  const photographer = document.getElementById('copyright-photographer').value.trim();
-  const filesRaw = document.getElementById('copyright-files').value.trim();
-
-  if (!photographer) {
-    showStatus('copyright-status', 'Bitte Fotograf*in eingeben', 'error');
+  // Check if already exists
+  if (copyrightsFile.content.some(c => c.photographer === name)) {
+    showStatus('copyright-status', 'Name existiert bereits', 'error');
     return;
   }
 
-  const files = filesRaw
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean);
+  copyrightsFile.content.push({ photographer: name, files: [] });
+  await saveCopyrightData();
+  input.value = '';
+  renderPhotographerPills();
+  renderDesignGrid(); // refresh dropdowns
+}
 
-  const data = copyrightsFile.content;
-  if (editingCopyIdx !== null) {
-    data[editingCopyIdx] = { photographer, files };
-  } else {
-    data.push({ photographer, files });
+async function removePhotographer(name) {
+  if (!confirm(`"${name}" wirklich entfernen? Zuordnungen zu Fotos gehen verloren.`)) return;
+  copyrightsFile.content = copyrightsFile.content.filter(c => c.photographer !== name);
+  await saveCopyrightData();
+  renderPhotographerPills();
+  renderDesignGrid();
+}
+
+// Collect copyright assignments from all dropdowns and save
+let copyrightSaveTimer = null;
+function scheduleCopyrightSave() {
+  clearTimeout(copyrightSaveTimer);
+  copyrightSaveTimer = setTimeout(() => saveCopyrightFromGrid(), 600);
+}
+
+async function saveCopyrightFromGrid() {
+  // Rebuild copyrights.json from the dropdowns
+  const cards = document.querySelectorAll('#designs-grid .design-card');
+  const photographerMap = {}; // photographer → [stems]
+
+  cards.forEach(card => {
+    const stem = card.dataset.stem;
+    const sel = card.querySelector('.copyright-select');
+    const photographer = sel.value;
+    if (photographer) {
+      if (!photographerMap[photographer]) photographerMap[photographer] = [];
+      photographerMap[photographer].push(stem);
+    }
+  });
+
+  // Preserve photographer entries even if they have no assignments
+  const newData = copyrightsFile.content.map(c => ({
+    photographer: c.photographer,
+    files: photographerMap[c.photographer] || [],
+  }));
+
+  copyrightsFile.content = newData;
+  await saveCopyrightData();
+}
+
+function removeStemFromCopyrights(stem) {
+  for (const entry of copyrightsFile.content) {
+    entry.files = entry.files.filter(f => f !== stem);
   }
+  saveCopyrightData();
+}
 
+async function saveCopyrightData() {
   try {
-    const json = JSON.stringify(data, null, 2) + '\n';
+    const json = JSON.stringify(copyrightsFile.content, null, 2) + '\n';
     const result = await putFile('content/copyrights.json', json, copyrightsFile.sha, 'Update copyrights');
     copyrightsFile.sha = result.content.sha;
     showStatus('copyright-status', '✅ Gespeichert!', 'success');
-    closeCopyrightForm();
-    renderCopyrights();
   } catch (e) {
     showStatus('copyright-status', `❌ ${e.message}`, 'error');
-  }
-}
-
-async function deleteCopyright(idx) {
-  const data = copyrightsFile.content;
-  data.splice(idx, 1);
-  try {
-    const json = JSON.stringify(data, null, 2) + '\n';
-    const result = await putFile('content/copyrights.json', json, copyrightsFile.sha, 'Delete copyright entry');
-    copyrightsFile.sha = result.content.sha;
-    renderCopyrights();
-  } catch (e) {
-    alert(`Fehler: ${e.message}`);
   }
 }
 

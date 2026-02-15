@@ -339,30 +339,83 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
   flex-shrink: 0;
 }
 
-/* ── Copyright list ────────────────────────── */
-#copyright-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+/* ── Copyright on design cards ─────────────── */
+.copyright-select {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 0.2rem;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  background: rgba(0,0,0,0.55);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: center;
 }
 
-.copyright-card {
+.copyright-select:focus { outline: 1px solid var(--water-blue); }
+
+.copyright-select option {
+  background: var(--white);
+  color: var(--dark);
+  font-size: 0.85rem;
+}
+
+/* Photographer pills */
+.photographer-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.photographer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   background: var(--white);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+  border-radius: 20px;
+  padding: 0.3rem 0.6rem 0.3rem 0.8rem;
+  font-size: 0.85rem;
 }
 
-.copyright-card strong { color: var(--deep-blue); }
-.copyright-card .copyright-files { font-size: 0.8rem; color: #888; margin-top: 0.25rem; }
+.pill-remove {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 1rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.15rem;
+}
+
+.pill-remove:hover { opacity: 0.7; }
+
+.add-photographer-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.add-photographer-row input {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
 
 /* ── Forms ─────────────────────────────────── */
-#review-form, #copyright-form {
+#review-form {
   background: var(--white);
   border: 2px solid var(--water-blue);
   border-radius: 8px;
@@ -370,12 +423,12 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
   margin-top: 1rem;
 }
 
-#review-form h3, #copyright-form h3 {
+#review-form h3 {
   margin-bottom: 1rem;
   color: var(--deep-blue);
 }
 
-#review-form label, #copyright-form label {
+#review-form label {
   display: block;
   margin-bottom: 0.75rem;
   font-size: 0.9rem;
@@ -383,8 +436,7 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
   color: #555;
 }
 
-#review-form input, #review-form textarea,
-#copyright-form input, #copyright-form textarea {
+#review-form input, #review-form textarea {
   display: block;
   width: 100%;
   margin-top: 0.25rem;
