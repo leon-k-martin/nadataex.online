@@ -373,7 +373,7 @@ function renderDesignGrid() {
 
   grid.innerHTML = images.map(name => `
     <div class="image-card" data-name="${name}">
-      <img src="../static/img/products/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
+      <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
       <span class="image-name">${name}</span>
       <button class="image-delete" title="Löschen">×</button>
     </div>
@@ -386,8 +386,8 @@ function renderDesignGrid() {
       if (!confirm(`"${name}" wirklich löschen?`)) return;
       try {
         // Get the file SHA first
-        const fileData = await getFile(`static/img/products/${name}`);
-        await deleteFile(`static/img/products/${name}`, fileData.sha, `Delete design photo ${name}`);
+        const fileData = await getFile(`static/img/products/webp/${name}`);
+        await deleteFile(`static/img/products/webp/${name}`, fileData.sha, `Delete design photo ${name}`);
         // Remove from manifest
         manifestFile.content = manifestFile.content.filter(n => n !== name);
         const json = JSON.stringify(manifestFile.content, null, 2) + '\n';
@@ -409,7 +409,7 @@ async function uploadDesignImage(e) {
 
   try {
     const base64 = await readFileAsBase64(file);
-    const path = `static/img/products/${file.name}`;
+    const path = `static/img/products/webp/${file.name}`;
     await putBinaryFile(path, base64, null, `Add design photo ${file.name}`);
 
     // Add to manifest if not already there
