@@ -279,6 +279,20 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
 
 .image-card:hover .image-delete { display: flex; }
 
+/* FAQ preview — tall info-graphic images, show full */
+.faq-preview {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.faq-preview .image-card {
+  aspect-ratio: auto;
+}
+
+.faq-preview .image-card img {
+  height: auto;
+  object-fit: contain;
+}
+
 .upload-area { margin: 1rem 0; }
 
 .upload-btn {
