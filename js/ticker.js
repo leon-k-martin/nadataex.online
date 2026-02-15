@@ -96,9 +96,9 @@ async function loadReviews() {
             tp.setAttribute('startOffset', offset + '%');
 
             // Gentle fade in/out
-            let opacity = 0.55;
-            if (t < 0.06) opacity = (t / 0.06) * 0.55;
-            else if (t > 0.88) opacity = ((1 - t) / 0.12) * 0.55;
+            let opacity = 0.85;
+            if (t < 0.06) opacity = (t / 0.06) * 0.85;
+            else if (t > 0.88) opacity = ((1 - t) / 0.12) * 0.85;
             textEl.setAttribute('opacity', opacity);
 
             if (t < 1) {
