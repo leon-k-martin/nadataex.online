@@ -8,4 +8,10 @@ NADAtäx doesn't follow trends. It makes what feels necessary — quietly, susta
 
 ---
 
-Übersetzung kommt bald.
+NADAtäx Upcycling ist ein Ein-Frau-Atelier mit Sitz in Berlin-Moabit. Was mit einer einzigen Plane begann, die sie nicht wegwerfen konnte, entwickelte sich zu einer Praxis des sorgfältigen Gestaltens und bewussten Wiederverwendens. Aus diesem ersten Material entstanden die ersten Rucksäcke – jeder einzelne von Hand geformt, jeder eine Antwort auf die Frage: Was kann daraus werden?
+
+Diese ersten Rucksäcke fanden ihr Zuhause bei Vintage Safari in Nürnberg. Seitdem hat sich der Weg ruhig weiterentwickelt: neue Taschenmodelle, verkauft über Vintage Safari, Frau Wunderwald in Berlin und House of Orange in Dresden sowie direkt über Instagram. Neben Taschen und Accessoires für den Alltag entstehen bei NADAtäx gelegentlich auch Kostüme für Theaterproduktionen – jedes Stück getragen von derselben Haltung aus Wiederverwendung und Vorstellungskraft.
+
+Im Mittelpunkt steht dabei eine einfache Idee: Materialien, die bereits ein Leben hinter sich haben, können ein neues bekommen – ohne ihre Geschichte auszulöschen. Statt neuer Stoffe wird mit dem gearbeitet, was bereits existiert. Struktur, Gebrauchsspuren und Charakter bestimmen dabei die Gestaltung jedes einzelnen Stücks. Dieser Ansatz erkennt den Wert in Dingen, die andere vielleicht übersehen würden, und stellt den Kreislauf von Verschwendung infrage, der große Teile der heutigen Mode prägt.
+
+NADAtäx folgt keinen Trends. Es macht, was sich notwendig anfühlt – leise, nachhaltig und mit einem genauen Blick auf Material und Handwerk.

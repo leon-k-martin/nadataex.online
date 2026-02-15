@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSlideshow();
     loadAbout();
     loadFAQ();
-    loadProducts();
+    loadProducts().then(() => initCopyrights());
     loadProcessPhotos();
     loadReviews();
     initRipples();
