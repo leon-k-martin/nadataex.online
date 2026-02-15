@@ -39,28 +39,56 @@ async function loadReviews() {
         while (idx === lastIndex && reviews.length > 1);
         lastIndex = idx;
 
-        // Extract wave curve only (strip the fill-closing L...Z)
+        // Get actual rendered dimensions
+        const rect = divider.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height || 50;
+
+        // Extract wave curve and rescale from 1200×60 viewBox to actual pixel size
         const fullD = originalPath.getAttribute('d');
         const waveD = fullD.replace(/\s*L[\d.,\s]+Z\s*$/i, '');
+        const scaleX = w / 1200;
+        const scaleY = h / 60;
+        const scaledD = waveD.replace(/(\d+\.?\d*)/g, (match, num, offset, str) => {
+            // Determine if this number is an X or Y coordinate
+            // In SVG path data, coordinates alternate X,Y
+            return match; // We'll use a transform instead
+        });
 
-        // Unique ID for this path
+        // Create an overlay SVG with correct aspect ratio
+        const NS = 'http://www.w3.org/2000/svg';
+        const overlaySvg = document.createElementNS(NS, 'svg');
+        overlaySvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        overlaySvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        overlaySvg.style.cssText = `
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; overflow: visible; z-index: 2;
+        `;
+
         const pathId = 'wave-tp-' + Date.now();
 
-        // Create invisible path for text to follow
-        const NS = 'http://www.w3.org/2000/svg';
+        // Create guide path scaled to actual pixels
         const guidePath = document.createElementNS(NS, 'path');
         guidePath.setAttribute('id', pathId);
         guidePath.setAttribute('d', waveD);
         guidePath.setAttribute('fill', 'none');
         guidePath.setAttribute('stroke', 'none');
+        guidePath.setAttribute('transform', `scale(${scaleX}, ${scaleY})`);
+
+        const defs = document.createElementNS(NS, 'defs');
+        defs.appendChild(guidePath);
+        overlaySvg.appendChild(defs);
 
         // Use deep blue; cream on blue theme
         const isBlue = document.body.classList.contains('theme-blue');
         const fillColor = isBlue ? '#F5F0E8' : '#0818a8';
 
-        // Create text element
+        // Font size: readable on mobile too
+        const fontSize = Math.max(10, Math.min(14, w * 0.028));
+
         const textEl = document.createElementNS(NS, 'text');
-        textEl.setAttribute('font-size', '11');
+        textEl.setAttribute('font-size', fontSize);
         textEl.setAttribute('font-family', "'Courier New', monospace");
         textEl.setAttribute('font-style', 'italic');
         textEl.setAttribute('fill', fillColor);
@@ -73,29 +101,20 @@ async function loadReviews() {
         tp.textContent = '\u201E' + reviews[idx].text + '\u201C';
 
         textEl.appendChild(tp);
-
-        // Add defs for path, then the text
-        let defs = svg.querySelector('defs');
-        if (!defs) {
-            defs = document.createElementNS(NS, 'defs');
-            svg.insertBefore(defs, svg.firstChild);
-        }
-        defs.appendChild(guidePath);
-        svg.appendChild(textEl);
+        overlaySvg.appendChild(textEl);
+        divider.appendChild(overlaySvg);
 
         // Animate startOffset from 100% → -100%  &  fade in/out
-        const duration = 16000;
+        const duration = Math.max(10000, w * 30); // scale duration to width
         const startTime = performance.now();
 
         function animate(now) {
             const elapsed = now - startTime;
             const t = Math.min(elapsed / duration, 1);
 
-            // Move from 100% to -100%
             const offset = 100 - t * 200;
             tp.setAttribute('startOffset', offset + '%');
 
-            // Gentle fade in/out
             let opacity = 0.85;
             if (t < 0.06) opacity = (t / 0.06) * 0.85;
             else if (t > 0.88) opacity = ((1 - t) / 0.12) * 0.85;
@@ -104,8 +123,7 @@ async function loadReviews() {
             if (t < 1) {
                 requestAnimationFrame(animate);
             } else {
-                textEl.remove();
-                guidePath.remove();
+                overlaySvg.remove();
             }
         }
 
