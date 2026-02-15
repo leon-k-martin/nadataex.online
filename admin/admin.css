@@ -89,8 +89,10 @@ body {
   font-size: 0.85rem;
 }
 
-.header-actions a { color: var(--cream); }
-.header-actions a:hover { color: var(--white); }
+.header-actions a,
+.header-actions .btn-small { color: var(--dark); }
+.header-actions a:hover,
+.header-actions .btn-small:hover { color: var(--deep-blue); }
 
 /* ── Tabs ──────────────────────────────────── */
 .admin-nav {
