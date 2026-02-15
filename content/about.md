@@ -14,4 +14,4 @@ Diese ersten Rucksäcke fanden ihr Zuhause bei Vintage Safari in Nürnberg. Seit
 
 Im Mittelpunkt steht dabei eine einfache Idee: Materialien, die bereits ein Leben hinter sich haben, können ein neues bekommen – ohne ihre Geschichte auszulöschen. Statt neuer Stoffe wird mit dem gearbeitet, was bereits existiert. Struktur, Gebrauchsspuren und Charakter bestimmen dabei die Gestaltung jedes einzelnen Stücks. Dieser Ansatz erkennt den Wert in Dingen, die andere vielleicht übersehen würden, und stellt den Kreislauf von Verschwendung infrage, der große Teile der heutigen Mode prägt.
 
-NADAtäx folgt keinen Trends. Es macht, was sich notwendig anfühlt – leise, nachhaltig und mit einem genauen Blick auf Material und Handwerk.
+NADAtäx folgt keinen Trends. Es macht, was sich notwendig anfühlt – leise, nachhaltig und mit einem genauen Blick auf Material und Handwerk..
