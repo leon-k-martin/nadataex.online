@@ -759,11 +759,5 @@ function escapeHtml(str) {
 }
 
 function showStatus(elementId, message, type) {
-  const el = document.getElementById(elementId);
-  el.textContent = message;
-  el.className = `status ${type}`;
-  el.classList.remove('hidden');
-  if (type === 'success') {
-    setTimeout(() => el.classList.add('hidden'), 3000);
-  }
+  alert(message);
 }
