@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NADAtäx – Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- Login screen -->
+  <div id="login-screen" class="screen">
+    <div class="login-box">
+      <h1>✂️ NADAtäx Admin</h1>
+      <p>Gib dein Passwort ein, um Inhalte auf der Website zu bearbeiten.</p>
+      <input type="password" id="token-input" placeholder="Passwort eingeben">
+      <button id="login-btn">Anmelden</button>
+      <p id="login-error" class="error hidden"></p>
+      <p class="login-hint">Passwort vergessen? Frag bei Leon nach.</p>
+    </div>
+  </div>
+
+  <!-- Admin dashboard -->
+  <div id="admin-screen" class="screen hidden">
+    <header>
+      <h1>✂️ NADAtäx Admin</h1>
+      <div class="header-actions">
+        <a href="../" class="btn-small">← Zur Website</a>
+        <button id="logout-btn" class="btn-small">Abmelden</button>
+      </div>
+    </header>
+
+    <nav class="admin-nav">
+      <button class="tab active" data-tab="about">📝 About</button>
+      <button class="tab" data-tab="faq">❓ FAQ</button>
+      <button class="tab" data-tab="reviews">💬 Testimonials</button>
+      <button class="tab" data-tab="designs">📸 Designs</button>
+    </nav>
+
+    <!-- About tab -->
+    <div id="tab-about" class="tab-panel active">
+      <h2>About-Text bearbeiten</h2>
+      <p class="tab-desc">Der Text hat zwei Abschnitte: Englisch oben, dann <code>---</code> auf einer eigenen Zeile, dann Deutsch darunter.</p>
+      <div id="about-editor-panel" class="editor-panel">
+        <div class="editor-actions">
+          <button id="save-about-btn" class="btn-primary">💾 Speichern</button>
+        </div>
+        <div class="editor-help">
+          <details>
+            <summary>Formatierungs-Hilfe</summary>
+            <ul class="format-help">
+              <li><code>**Text**</code> → <strong>Fetter Text</strong></li>
+              <li><code>*Text*</code> → <em>Kursiver Text</em></li>
+              <li><code>[Klick hier](https://...)</code> → Ein Link</li>
+              <li>Eine Leerzeile = neuer Absatz</li>
+              <li><code>---</code> auf einer eigenen Zeile = Trennung EN / DE</li>
+            </ul>
+          </details>
+        </div>
+        <textarea id="about-editor" rows="20" placeholder="Laden..."></textarea>
+        <p id="about-status" class="status hidden"></p>
+      </div>
+    </div>
+
+    <!-- FAQ tab -->
+    <div id="tab-faq" class="tab-panel hidden">
+      <h2>FAQ bearbeiten</h2>
+      <p class="tab-desc">Jede Frage beginnt mit <code>## Überschrift</code>. Der Text darunter ist die Antwort. Für EN/DE: Englisch oben, <code>---</code>, Deutsch unten.</p>
+      <div class="editor-panel">
+        <div class="editor-actions">
+          <button id="save-faq-btn" class="btn-primary">💾 Speichern</button>
+        </div>
+        <textarea id="faq-editor" rows="20" placeholder="Laden..."></textarea>
+        <p id="faq-status" class="status hidden"></p>
+      </div>
+      <h3 style="margin-top:2rem">FAQ-Bilder</h3>
+      <p class="tab-desc">Bilder in <code>static/img/faq/</code>. Neue Bilder als PNG hochladen.</p>
+      <div id="faq-images" class="image-grid"></div>
+      <div class="upload-area">
+        <label class="btn-primary upload-btn">
+          📷 Bild hochladen
+          <input type="file" id="faq-image-upload" accept="image/png,image/jpeg,image/webp" hidden>
+        </label>
+        <p id="faq-upload-status" class="status hidden"></p>
+      </div>
+    </div>
+
+    <!-- Testimonials tab -->
+    <div id="tab-reviews" class="tab-panel hidden">
+      <div class="dates-header">
+        <h2>Testimonials</h2>
+        <button id="add-review-btn" class="btn-primary">+ Neues Zitat</button>
+      </div>
+      <div id="reviews-list"></div>
+      <div id="review-form" class="hidden">
+        <h3 id="review-form-title">Neues Zitat</h3>
+        <label>Zitat-Text <textarea id="review-text" rows="3" placeholder="z.B. die tasche ist so toll!"></textarea></label>
+        <div class="form-actions">
+          <button id="save-review-btn" class="btn-primary">💾 Speichern</button>
+          <button id="cancel-review-btn" class="btn-small">Abbrechen</button>
+        </div>
+        <p id="review-status" class="status hidden"></p>
+      </div>
+    </div>
+
+    <!-- Designs tab -->
+    <div id="tab-designs" class="tab-panel hidden">
+      <h2>Design-Fotos</h2>
+      <p class="tab-desc">Fotos für die Galerie. Werden automatisch als WebP konvertiert angezeigt.</p>
+      <div id="designs-grid" class="image-grid"></div>
+      <div class="upload-area">
+        <label class="btn-primary upload-btn">
+          📷 Foto hochladen
+          <input type="file" id="design-image-upload" accept="image/jpeg,image/png,image/webp" hidden>
+        </label>
+        <p id="design-upload-status" class="status hidden"></p>
+      </div>
+
+      <h3 style="margin-top:2rem">Copyright-Zuordnung</h3>
+      <p class="tab-desc">Welcher Fotograf hat welche Bilder gemacht.</p>
+      <div id="copyright-list"></div>
+      <div id="copyright-form" class="hidden">
+        <h3 id="copyright-form-title">Neue Zuordnung</h3>
+        <label>Fotograf*in <input type="text" id="copyright-photographer" placeholder="z.B. Lauryn Zoe Hinsch"></label>
+        <label>Dateinamen (ohne Endung, komma-getrennt)
+          <textarea id="copyright-files" rows="3" placeholder="z.B. DSC03345, posten, nadataex033"></textarea>
+        </label>
+        <div class="form-actions">
+          <button id="save-copyright-btn" class="btn-primary">💾 Speichern</button>
+          <button id="cancel-copyright-btn" class="btn-small">Abbrechen</button>
+        </div>
+        <p id="copyright-status" class="status hidden"></p>
+      </div>
+      <button id="add-copyright-btn" class="btn-primary" style="margin-top:1rem">+ Fotograf hinzufügen</button>
+    </div>
+
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
