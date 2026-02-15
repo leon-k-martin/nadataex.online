@@ -64,26 +64,6 @@ function applyCopyrightLabels() {
         label.className = 'photo-credit';
         label.textContent = `© ${photographer}`;
         card.appendChild(label);
-
-        // Dynamically flip label position when bottom is clipped
-        card.addEventListener('mouseenter', () => {
-            const cardRect = card.getBoundingClientRect();
-            const viewportH = window.innerHeight;
-
-            // Check against viewport
-            let bottomClipped = cardRect.bottom > viewportH - 20;
-
-            // Also check against the closest scrollable grid container
-            if (!bottomClipped) {
-                const grid = card.closest('.product-grid');
-                if (grid) {
-                    const gridRect = grid.getBoundingClientRect();
-                    bottomClipped = cardRect.bottom > gridRect.bottom - 5;
-                }
-            }
-
-            label.classList.toggle('credit-top', bottomClipped);
-        });
     });
 }
 
@@ -153,4 +133,81 @@ async function initCopyrights() {
         });
         lbObserver.observe(lb, { attributes: true, attributeFilter: ['class'] });
     }
+
+    // Init mosaic hover clone (desktop only)
+    initMosaicHoverClone();
+}
+
+// ===== MOSAIC HOVER CLONE =====
+// On hover in mosaic view, create a fixed-position clone of the card
+// at the exact same scale(1.5) size/position. This escapes all
+// overflow clipping while looking identical to the CSS hover.
+
+let _hoverClone = null;
+
+function initMosaicHoverClone() {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+
+    const grid = document.getElementById('product-grid');
+    if (!grid) return;
+
+    // Use event delegation on the grid
+    grid.addEventListener('mouseenter', onMosaicCardEnter, true);
+    grid.addEventListener('mouseleave', onMosaicCardLeave, true);
+}
+
+function onMosaicCardEnter(e) {
+    const card = e.target.closest('.product-card');
+    const grid = document.getElementById('product-grid');
+    if (!card || !grid || !grid.classList.contains('mosaic')) return;
+
+    const img = card.querySelector('img');
+    if (!img) return;
+
+    // Get the card's current position (before CSS transform)
+    const rect = card.getBoundingClientRect();
+    const scale = 1.5;
+    const scaledW = rect.width * scale;
+    const scaledH = rect.height * scale;
+    // Center the scaled clone on the original card center
+    const left = rect.left + rect.width / 2 - scaledW / 2;
+    const top = rect.top + rect.height / 2 - scaledH / 2;
+
+    // Create or reuse clone
+    if (!_hoverClone) {
+        _hoverClone = document.createElement('div');
+        _hoverClone.className = 'mosaic-hover-clone';
+        document.body.appendChild(_hoverClone);
+    }
+
+    // Build clone content
+    let creditHTML = '';
+    if (_copyrightMap) {
+        const stem = getStem(img.getAttribute('src'));
+        const photographer = _copyrightMap.get(stem);
+        if (photographer) {
+            creditHTML = `<span class="photo-credit">&copy; ${photographer}</span>`;
+        }
+    }
+
+    _hoverClone.innerHTML = `<img src="${img.src}" alt="${img.alt}">${creditHTML}`;
+    _hoverClone.style.left = left + 'px';
+    _hoverClone.style.top = top + 'px';
+    _hoverClone.style.width = scaledW + 'px';
+    _hoverClone.style.height = scaledH + 'px';
+    _hoverClone.style.opacity = '1';
+
+    // Store reference to source card
+    _hoverClone._sourceCard = card;
+}
+
+function onMosaicCardLeave(e) {
+    const card = e.target.closest('.product-card');
+    if (!card || !_hoverClone) return;
+
+    // Only hide if leaving the source card
+    if (_hoverClone._sourceCard !== card) return;
+    if (card.contains(e.relatedTarget)) return;
+
+    _hoverClone.style.opacity = '0';
 }

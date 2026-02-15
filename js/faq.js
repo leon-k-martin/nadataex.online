@@ -78,28 +78,22 @@ async function loadFAQ() {
 
         // Setup language toggle
         const images = document.getElementById('faq-images');
-        if (toggle && images) {
-            const hasGermanContent = deSections.length > 0;
-            let showingText = false; // Start with images visible
+        const imagesDe = document.getElementById('faq-images-de');
+        if (toggle && images && imagesDe) {
+            let showingDe = false; // Start with English images visible
 
             toggle.addEventListener('click', () => {
-                showingText = !showingText;
-                toggle.textContent = showingText ? 'en' : 'de';
+                showingDe = !showingDe;
+                toggle.textContent = showingDe ? 'en' : 'de';
 
-                if (showingText) {
-                    // Show text cards, hide images
-                    container.style.display = '';
+                if (showingDe) {
+                    // Show German images, hide English images
                     images.style.display = 'none';
-                    // Only apply show-de class if German content exists
-                    if (hasGermanContent) {
-                        container.classList.add('show-de');
-                    }
-                    requestAnimationFrame(() => adjustFaqLayout());
+                    imagesDe.style.display = '';
                 } else {
-                    // Show English images, hide text
-                    container.style.display = 'none';
+                    // Show English images, hide German images
                     images.style.display = '';
-                    container.classList.remove('show-de');
+                    imagesDe.style.display = 'none';
                 }
             });
         }
@@ -118,24 +112,35 @@ function initFAQToggle() {
     // Adjust layout on init
     const cards = document.getElementById('faq-cards');
     const images = document.getElementById('faq-images');
-    if (!cards || !images) return;
+    const imagesDe = document.getElementById('faq-images-de');
+    if (!images) return;
 
-    // Show images by default (English), hide text cards
-    cards.style.display = 'none';
+    // Show English images by default, hide cards and German images
+    if (cards) cards.style.display = 'none';
     images.style.display = '';
+    if (imagesDe) imagesDe.style.display = 'none';
 
-    // No need to adjust images - they use natural CSS flex-wrap
-
-    // Click-to-enlarge FAQ tiles using the existing lightbox
+    // Click-to-enlarge for English FAQ tiles
     const tiles = images.querySelectorAll('.faq-tile');
     const faqSrcs = Array.from(tiles).map(img => img.src);
-
     tiles.forEach((tile, i) => {
         tile.style.cursor = 'pointer';
         tile.addEventListener('click', () => {
             openFAQLightbox(i, faqSrcs);
         });
     });
+
+    // Click-to-enlarge for German FAQ tiles
+    if (imagesDe) {
+        const tilesDe = imagesDe.querySelectorAll('.faq-tile');
+        const faqSrcsDe = Array.from(tilesDe).map(img => img.src);
+        tilesDe.forEach((tile, i) => {
+            tile.style.cursor = 'pointer';
+            tile.addEventListener('click', () => {
+                openFAQLightbox(i, faqSrcsDe);
+            });
+        });
+    }
 }
 
 // Unified layout adjuster for both FAQ images and cards to avoid X+1 orphans
