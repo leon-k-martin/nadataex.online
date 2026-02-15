@@ -520,8 +520,11 @@ function renderGroupSection(groupName, images, stemToPhotographer, photographers
     return `
       <div class="image-card design-card" data-name="${name}" data-stem="${stem}" draggable="true">
         <img src="../static/img/products/webp/${encodeURIComponent(name)}" alt="${name}" loading="lazy">
+        <div class="copyright-bar">
+          <span class="copyright-label">©</span>
+          <select class="copyright-select" title="Fotograf:in auswählen">${options}</select>
+        </div>
         <span class="image-name">${name}</span>
-        <select class="copyright-select" title="Fotograf:in">${options}</select>
         <button class="image-delete" title="Löschen">×</button>
       </div>`;
   }).join('');

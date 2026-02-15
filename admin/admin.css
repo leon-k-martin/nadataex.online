@@ -433,23 +433,36 @@ textarea:focus { border-color: var(--water-blue); outline: none; }
 }
 
 /* ── Copyright on design cards ─────────────── */
-.copyright-select {
+.copyright-bar {
   position: absolute;
   bottom: 20px;
   left: 0;
   right: 0;
-  width: 100%;
-  padding: 0.2rem;
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.3);
-  background: rgba(0,0,0,0.55);
+  display: flex;
+  align-items: center;
+  background: rgba(0,0,0,0.7);
+  padding: 0.25rem 0.4rem;
+  gap: 0.3rem;
+}
+
+.copyright-label {
   color: var(--white);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.copyright-select {
+  flex: 1;
+  padding: 0.15rem 0.3rem;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.15);
+  color: var(--white);
+  font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  text-align: center;
 }
 
 .copyright-select:focus { outline: 1px solid var(--water-blue); }
